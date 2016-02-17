@@ -3,7 +3,7 @@
 int main( int argc, const char* argv[] )
 {
 
-  Init_DS4("");
+  Init_DS4("sudo ds4drv --daemon");
 
   int fd,rc;
   int done = 0;

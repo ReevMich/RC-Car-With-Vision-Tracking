@@ -11,6 +11,7 @@ void Init_DS4(const char *command)
   
   while(found < 0)
   {
+    found = OpenJoystick();
     /* int read = open ("log.txt"); */    
     /*       //system(""); */
     /*     printf("Connecting to ds4 controller... \n"); */
