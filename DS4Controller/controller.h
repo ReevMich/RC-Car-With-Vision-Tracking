@@ -12,6 +12,12 @@
 #define JS_EVENT_INIT           0x80     /* initial state of device */
 #define NUMBER_OF_BUTTONS       0x12     /* number of buttons on the ps4 controller */
 
+#define MIN_AXIS_VALUE         -32767    /* Lowest axis value the controller outputs */
+#define MAX_AXIS_VALUE          32767    /* Highest axis value the controller outputs */
+
+#define MIN_RAW_AXIS_VALUE      0        /* Lowest value we want to the controller to output */
+#define MAX_RAW_AXIS_VALUE      255      /* Highest value we want to the controller to output */
+
 struct  JoystickEvent {
   __u32 time;     /* eveimestamp in milliseconds */
   __s16 value;    /* value */
@@ -35,3 +41,5 @@ extern int GetJoystickStatus(struct JoystickInput *wjse);
 
 //
 extern int GetJoystickEvents(struct JoystickEvent *jse);
+
+extern int GetRawAxis(int inputValue);

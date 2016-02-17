@@ -1,10 +1,4 @@
-/** 
- * Author: Michael Reeves 
- * Class: Controller.c 
- * Description: This class managers all the controller functionality
- */
-
-#include "controller.h"
+ #include "controller.h"
 
 int joystick_id = -1;
 
@@ -17,7 +11,7 @@ void Init_DS4(const char *command)
   
   while(found < 0)
   {
-    /*     //int read = open ("log.txt"); */    
+    /* int read = open ("log.txt"); */    
     /*       //system(""); */
     /*     printf("Connecting to ds4 controller... \n"); */
     sleep(2);
@@ -56,22 +50,22 @@ int GetJoystickStatus(struct JoystickInput *wjse)
       switch(jse.number)
 	{
 	case 0: wjse->axis[jse.number] = jse.value; /* Left Stick X */
-	  printf("Left Stick X Axis %d \n", jse.value);
+	  printf("Left Stick X Axis %d \n", GetRawAxis(jse.value));
 	  break;
 	case 1: wjse->axis[jse.number] = jse.value; /* Left Stick Y */
-	  printf("Left Stick Y Axis %d \n", jse.value);
+	  printf("Left Stick Y Axis %d \n", GetRawAxis(jse.value));
 	  break;
 	case 2: wjse->axis[jse.number] = jse.value; /* Right Stick X */
-	  printf("Right Stick X Axis %d \n", jse.value);
+	  printf("Right Stick X Axis %d \n", GetRawAxis(jse.value));
 	  break;
 	case 3: wjse->axis[jse.number] = jse.value; /* L2 Tigger Axis */
-	  printf("L2 Trigger Axis %d \n",jse.value);
+	  printf("L2 Trigger Axis %d \n",GetRawAxis(jse.value));
 	  break;
 	case 4: wjse->axis[jse.number] = jse.value; /* R2 Trigger Axis */
-	  printf("R2 Trigger Axis %d \n", jse.value);
+	  printf("R2 Trigger Axis %d \n", GetRawAxis(jse.value));
 	  break;
 	case 5: wjse->axis[jse.number] = jse.value; /* Right Stick Y */
-	  printf("Right Stick Y Axis %d \n", jse.value);
+	  printf("Right Stick Y Axis %d \n", GetRawAxis(jse.value));
 	  break;
 	case 9:
 	  if(jse.value < 0){
@@ -149,6 +143,13 @@ int GetJoystickStatus(struct JoystickInput *wjse)
     
 
   return 0;
+}
+
+int GetRawAxis(int inputValue)
+{
+  int value = ((inputValue - MIN_AXIS_VALUE) * (MAX_RAW_AXIS_VALUE - MIN_RAW_AXIS_VALUE) / (MAX_AXIS_VALUE - MIN_AXIS_VALUE) + 0);
+
+  return value;
 }
 
 int GetJoystickEvents(struct JoystickEvent *jse)
