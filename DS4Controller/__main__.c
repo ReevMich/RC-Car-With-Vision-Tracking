@@ -23,7 +23,8 @@ int main( int argc, const char* argv[] )
   pthread_attr_t attr;
   pthread_attr_init(&attr);
   pthread_create(&thread_handle,&attr, GetJoystickStatus_Log, &jse);
- 
+  pthread_join(thread_handle,NULL);
+
   while(1)
     {
       printf("CALLING");
@@ -31,8 +32,7 @@ int main( int argc, const char* argv[] )
       
     } 
   // Wait until thread is done with its work
-  pthread_join(thread_handle,NULL);
-  
+
   
   return 0;
 }  
