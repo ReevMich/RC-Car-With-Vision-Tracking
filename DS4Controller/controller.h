@@ -3,6 +3,8 @@
 #include <linux/types.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <pthread.h>
+#include <stdbool.h>
 
 #define JOYSTICK_DEVICE  "/dev/input/js0"
 #define JOYSTICK_DEVICE1  "/dev/input/js1"
@@ -18,28 +20,37 @@
 #define MIN_RAW_AXIS_VALUE      0        /* Lowest value we want to the controller to output */
 #define MAX_RAW_AXIS_VALUE      255      /* Highest value we want to the controller to output */
 
-struct  JoystickEvent {
+typedef struct JoystickEvent {
   __u32 time;     /* eveimestamp in milliseconds */
   __s16 value;    /* value */
   __u8 type;      /* event type */
   __u8 number;    /* axis/button number */
-};
+} JoystickEvent;
 
-struct JoystickInput {
+typedef struct JoystickInput {
   int button[NUMBER_OF_BUTTONS];
   int axis[NUMBER_OF_BUTTONS];
-};
+} JoystickInput;
+
+typedef enum DS4Buttons{
+  BTN_SQUARE = 0,
+  BTN_CROSS = 1,
+  BTN_CIRCLE = 2  
+} DS4Buttons;
 
 //
-extern void Init_DS4(const char *command);
+void Init_DS4(const char *command);
 
 // Opens the joystick device file
-extern int OpenJoystick();
+int OpenJoystick();
 
 //
-extern int GetJoystickStatus(struct JoystickInput *wjse);
-
+void* GetJoystickStatus(void* parameter);
 //
-extern int GetJoystickEvents(struct JoystickEvent *jse);
+int GetJoystickEvents(struct JoystickEvent *jse);
 
-extern int GetRawAxis(int inputValue);
+int GetRawAxis(int inputValue);
+
+void* Loop(void* obj);
+
+void GetButtonDown(DS4Buttons *parameter);
