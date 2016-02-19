@@ -5,19 +5,28 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 #include "ControllerOBJ.h"
+
+struct Books{
+
+  int id;
+  
+};
+
+struct Books book1;
 
 int main()
 {
+  book1.id = 900;
 
-    ControllerOBJ controller;
-    controller = newControllerOBJ();
+  ControllerOBJ controller;
+  controller = newControllerOBJ();
 
-    printf("value of private int==%d\n", getIDNumber(controller));
+  while(getActiveState()){ 
 
-    setIDNumber(controller,26);
-
-    printf("value of private int==%d\n", getIDNumber(controller));
-
-    return 0;
+    puts("hello");
+    sleep(1);
+  }
+  return 0;
 }

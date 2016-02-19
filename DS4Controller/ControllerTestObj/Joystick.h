@@ -29,9 +29,4 @@ typedef struct js_state {
 
 
 //TODO: Find out where this can go!!!
-// This header should only be accessible from controllerOBJ.c
-typedef enum ControllerButtons{
-    BTN_SQUARE = 0,
-    BTN_CROSS = 1,
-    BTN_CIRCLE = 2
-} ControllerButtons;
+
