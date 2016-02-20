@@ -30,16 +30,15 @@ static void ReadEvent(struct js_event *jse);
 // Runs all the necessary functions to ensure connectivity
 static void Initialize(ControllerOBJ controller)
 {
-  int fd = open(JOYSTICK_DEVICE, O_RDONLY | O_NONBLOCK);
+  int fd = open(JOYSTICK_DEVICE, O_RDONLY);
   
-  if(fd > 0)
-    {
-      js_fd = fd;
-      active = true;
-      pthread_attr_t attr;
-      pthread_attr_init(&attr);
-      pthread_create(&controller->thread,&attr, Loop, &controller);
-    }
+  if(fd > 0){
+    js_fd = fd;
+    active = true;
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_create(&controller->thread,&attr, Loop, &controller);
+  }
 }
 
 static void* Loop(void* parameters){
@@ -60,19 +59,17 @@ static void* Loop(void* parameters){
 static void ReadEvent(struct js_event *jse){
   
   int bytes = read(js_fd,jse, sizeof(*jse));
-
-  if(bytes > 0)
-    {
-      jse->type &= ~JS_INIT;
-      if(jse->type == JS_AXIS){
-	state.axis[jse->number] = jse->value;
-	printf("AXIS \n");
-      }
-      if(jse->type == JS_BUTTON){
-	printf("BUTTON \n");
-      }
-
+  
+  if(bytes > 0){
+    jse->type &= ~JS_INIT;
+    if(jse->type == JS_AXIS){
+      state.axis[jse->number] = GetRawAxis(jse->value);
     }
+    if(jse->type == JS_BUTTON){
+      state.button[jse->number] = jse->value;
+    }
+
+  }
 }
 
 //TODO: ADD COMMAND PARAMETER IN THE CONSTRUCTOR
@@ -96,6 +93,36 @@ bool getActiveState(ControllerOBJ controller){
   return active;
 }
 
-bool getKeyDown (enum KeyCode key){
+bool getKeyDown (keycode button){
+  if(state.button[button]>0){
+    return true;
+  }
   return false;
+}
+
+bool getAxisDown (axiscode axis){
+
+  if(state.axis[axis] > 0){
+    return true;
+  }
+  
+  return false;
+}
+
+int getAxisValue(axiscode axis){
+
+  if(getAxisDown(axis) && axis == AXIS_R2){
+    return state.axis[axis];
+  }
+  if(getAxisDown(axis) && axis == AXIS_L2) {
+    return state.axis[axis];
+  }
+  return 0;
+}
+
+static int GetRawAxis(int inputValue)
+{
+  int value = ((inputValue - MIN_AXIS_VALUE) * (MAX_RAW_AXIS_VALUE - MIN_RAW_AXIS_VALUE) / (MAX_AXIS_VALUE - MIN_AXIS_VALUE) + 0);
+
+  return value;
 }

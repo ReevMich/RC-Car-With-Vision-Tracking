@@ -23,10 +23,21 @@ int main()
   ControllerOBJ controller;
   controller = newControllerOBJ();
 
-  while(getActiveState()){ 
+  while(getActiveState(controller)){ 
 
-    puts("hello");
-    sleep(1);
+    if(getKeyDown(BTN_SQUARE)) {
+      puts("Button");
+    }
+    if(getAxisDown(AXIS_L2)){
+      int value = getAxisValue(AXIS_L2);
+      printf("L2 = %d \n", value); 
+    }
+    if(getAxisDown(AXIS_R2)){
+      int value = getAxisValue(AXIS_R2);
+      printf("R2 = %d \n", value); 
+    }
+
+    //sleep(1);
   }
   return 0;
 }

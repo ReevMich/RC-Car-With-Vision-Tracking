@@ -12,8 +12,11 @@
 #define MIN_AXIS_VALUE         -32767    /* Lowest axis value the controller outputs */
 #define MAX_AXIS_VALUE          32767    /* Highest axis value the controller outputs */
 
+#define MIN_REV_AXIS_VALUE     -100
+#define MAX_REV_AXIS_VALUE     0
+
 #define MIN_RAW_AXIS_VALUE      0        /* Lowest value we want to the controller to output */
-#define MAX_RAW_AXIS_VALUE      255      /* Highest value we want to the controller to output */
+#define MAX_RAW_AXIS_VALUE      100      /* Highest value we want to the controller to output */
 
 typedef struct js_event {
     __u32 time;     /* event timestamp in milliseconds */
