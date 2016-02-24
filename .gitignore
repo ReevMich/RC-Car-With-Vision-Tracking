@@ -6,4 +6,6 @@ a.out
 *.o
 *.idea*
 *.emacs
-*.o
+*.pyc
+*.so
+*_wrap*.c
