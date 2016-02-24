@@ -9,6 +9,10 @@ Contains a list of each part of the hardware used for the project. Description (
 *Pirate 4wd Mobile Platfrom (Wheels, Motor, and Chassis) $40.00
 *Pack of AA Batteries (Power the motors) $7.00
 *Asortment of wires and cables (to connect components together) $5.00
+*BreadBoard (To connect leds, distance sensors) $7.00
+*Distance sensors (To prevent car from crashing) $9.00
+*Camera (To track the color) $34.00
+
 
 
 
