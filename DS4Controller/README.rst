@@ -69,6 +69,7 @@ Controller Functions
 --------------------
 
 Check the example above to find out some of these functions and constants are used.
+
 .. code-block:: c
  
     ControllerOBJ newControllerOBJ(void); // Needed to create a new controller object.      
