@@ -24,3 +24,17 @@ while(controller.active):
 
     if(ControllerModule.getAxisDown(ControllerModule.AXIS_RIGHT_STICK_Y)):
         print("RS_Y=%d" % ControllerModule.getAxisValue(ControllerModule.AXIS_RIGHT_STICK_Y))
+
+    if(ControllerModule.getKeyDown(ControllerModule.BTN_SQUARE)):
+        print("SQUARE")
+
+    if(ControllerModule.getKeyDown(ControllerModule.BTN_CIRCLE)):
+        print("CIRCLE")
+        
+    if(ControllerModule.getKeyDown(ControllerModule.BTN_TRIANGLE)):
+        print("TRIANGLE")
+
+    if(ControllerModule.getKeyDown(ControllerModule.BTN_CROSS)):
+        print("CROSS")
+
+        
