@@ -111,7 +111,15 @@ bool getKeyDown (int button){
 }
 
 bool getAxisDown (int axis){
-  if(state.axis[axis] > 0){
+
+  if(axis == AXIS_LEFT_STICK_X || axis == AXIS_LEFT_STICK_Y ||
+     axis == AXIS_RIGHT_STICK_X || axis == AXIS_RIGHT_STICK_Y){
+
+    if((state.axis[axis] >= 0 || state.axis[axis] <= 100) && state.axis[axis] != 50){
+      return true;
+    }
+    
+  } else if(state.axis[axis] > 0){
     return true;
   }
   
