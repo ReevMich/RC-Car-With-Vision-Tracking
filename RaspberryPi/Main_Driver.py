@@ -24,14 +24,18 @@ def main():
     camera_thread.start()
     img_display_thread.start()
 
-    command = "00000000"
+    command = raw_input("Enter Car Commands: ")
     while len(command) is not 0:
-        command = raw_input("Enter Car Commands: ")
 
-        left_wheels, right_wheels = command.split(" ")
+        try:
+            left_wheels, right_wheels = command.split(" ")
+        except ValueError:
+            left_wheels = "0"
+            right_wheels = "0"
         formatted_wheel_speeds = format_wheel_speeds(left_wheels) + format_wheel_speeds(right_wheels)
 
         set_ardunio_wheel_speeds(formatted_wheel_speeds)
+        command = raw_input("Enter Car Commands: ")
 
     camera_thread.join()
     img_display_thread.join()
@@ -42,7 +46,10 @@ def main():
 # Takes in a wheel speed and formats it for the arduino
 def format_wheel_speeds(input_speeds):
 
-    wheel_init = int(input_speeds)
+    try:
+        wheel_init = int(input_speeds)
+    except ValueError:
+        wheel_init = 0
 
     wheel = str(abs(wheel_init)).zfill(3)
 
@@ -70,11 +77,12 @@ class ImageCaptureThread(Thread):
     # Captures images and puts them in a queue
     def run(self):
         while not self.thread_kill_request.is_set():
-            try:
-                img = cam.getImage()
-                self.img_queue.put(img)
-            except self.img_queue.Empty:
-                continue
+            if self.img_queue.qsize() < 10:
+                try:
+                    img = cam.getImage()
+                    self.img_queue.put(img)
+                except self.img_queue.Empty:
+                    continue
 
     # Handles terminating the thread
     def join(self, timeout=None):
