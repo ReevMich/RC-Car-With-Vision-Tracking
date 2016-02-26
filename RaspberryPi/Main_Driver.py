@@ -3,6 +3,7 @@
 # Imports
 import serial
 import SimpleCV
+from time import sleep
 from threading import Thread, Event
 from Queue import Queue
 
@@ -24,7 +25,7 @@ def main():
     camera_thread.start()
     img_display_thread.start()
 
-    command = raw_input("Enter Car Commands: ")
+    command = str(raw_input("Enter Car Commands: "))
     while len(command) is not 0:
 
         try:
@@ -35,12 +36,17 @@ def main():
         formatted_wheel_speeds = format_wheel_speeds(left_wheels) + format_wheel_speeds(right_wheels)
 
         set_ardunio_wheel_speeds(formatted_wheel_speeds)
-        command = raw_input("Enter Car Commands: ")
+        command = str(raw_input("Enter Car Commands: "))
 
     camera_thread.join()
     img_display_thread.join()
 
     set_ardunio_wheel_speeds("00000000")
+
+    sleep(1)  # Give time for threads to close
+    # Clears the image queue of all images before close
+    with image_queue.mutex:
+        image_queue.queue.clear()
 
 
 # Takes in a wheel speed and formats it for the arduino
