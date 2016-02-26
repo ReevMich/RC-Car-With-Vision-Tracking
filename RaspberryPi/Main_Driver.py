@@ -23,15 +23,15 @@ def main():
     img_display_thread = ImageDisplayThread(image_queue)
     camera_thread.start()
     img_display_thread.start()
-
-    command = "00000000"
+ 
+    command = raw_input("Enter Car Commands: ")
     while len(command) is not 0:
-        command = raw_input("Enter Car Commands: ")
-
+	
         left_wheels, right_wheels = command.split(" ")
         formatted_wheel_speeds = format_wheel_speeds(left_wheels) + format_wheel_speeds(right_wheels)
 
         set_ardunio_wheel_speeds(formatted_wheel_speeds)
+        command = raw_input("Enter Car Commands: ")
 
     camera_thread.join()
     img_display_thread.join()
