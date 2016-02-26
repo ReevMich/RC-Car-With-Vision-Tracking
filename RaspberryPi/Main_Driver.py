@@ -3,7 +3,8 @@
 # Imports
 import serial
 import SimpleCV
-from threading import Thread
+from threading import Thread, Event
+from Queue import Queue
 
 # Global Variables
 arduino = serial.Serial('/dev/ttyACM0', 9600)  # USB serial connection with baud rate of 9600
@@ -13,12 +14,44 @@ cam = SimpleCV.Camera()
 # Main Method
 def main():
 
+    image_queue = Queue()
+
     print("Serial connected on " + arduino.name)
-    camera_thread = ImageThread(cam)
+
+    # Thread setup and start
+    camera_thread = ImageCaptureThread(cam, image_queue)
+    img_display_thread = ImageDisplayThread(image_queue)
     camera_thread.start()
-    while True:
+    img_display_thread.start()
+
+    command = "00000000"
+    while len(command) is not 0:
         command = raw_input("Enter Car Commands: ")
-        set_ardunio_wheel_speeds(command)
+
+        left_wheels, right_wheels = command.split(" ")
+        formatted_wheel_speeds = format_wheel_speeds(left_wheels) + format_wheel_speeds(right_wheels)
+
+        set_ardunio_wheel_speeds(formatted_wheel_speeds)
+
+    camera_thread.join()
+    img_display_thread.join()
+
+    set_ardunio_wheel_speeds("00000000")
+
+
+# Takes in a wheel speed and formats it for the arduino
+def format_wheel_speeds(input_speeds):
+
+    wheel_init = int(input_speeds)
+
+    wheel = str(abs(wheel_init)).zfill(3)
+
+    if wheel_init >= 0:
+        wheel = "0" + wheel
+    else:
+        wheel = "-" + wheel
+
+    return wheel
 
 
 def set_ardunio_wheel_speeds(command):
@@ -26,15 +59,50 @@ def set_ardunio_wheel_speeds(command):
 
 
 # Class for handling streaming from webcam
-class ImageThread(Thread):
-    def __init__(self, camera):
+class ImageCaptureThread(Thread):
+    # Initial Setup for thread
+    def __init__(self, camera, img_queue):
         Thread.__init__(self)
         self.cam = camera
+        self.img_queue = img_queue
+        self.thread_kill_request = Event()
 
+    # Captures images and puts them in a queue
     def run(self):
-        while True:
-            img = cam.getImage()
-            img.show()
+        while not self.thread_kill_request.is_set():
+            try:
+                img = cam.getImage()
+                self.img_queue.put(img)
+            except self.img_queue.Empty:
+                continue
+
+    # Handles terminating the thread
+    def join(self, timeout=None):
+        self.thread_kill_request.set()
+        super(ImageCaptureThread, self).join(timeout)
+
+
+# Thread for handling displaying the image
+class ImageDisplayThread(Thread):
+    # Initial Setup for thread
+    def __init__(self, img_queue):
+        Thread.__init__(self)
+        self.img_queue = img_queue
+        self.thread_kill_request = Event()
+
+    # Displays the image
+    def run(self):
+        while not self.thread_kill_request.is_set():
+            try:
+                img = self.img_queue.get()
+                img.show()
+            except self.img_queue.Empty:
+                continue
+
+    # Handles terminating the thread
+    def join(self, timeout=None):
+        self.thread_kill_request.set()
+        super(ImageDisplayThread, self).join(timeout)
 
 
 if __name__ == '__main__':
