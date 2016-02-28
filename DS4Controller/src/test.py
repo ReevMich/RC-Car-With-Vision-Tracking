@@ -20,7 +20,7 @@ while(controller.active):
         print("LS_Y=%d" % ControllerModule.getAxisValue(ControllerModule.AXIS_LEFT_STICK_Y))
 
     if(ControllerModule.getAxisDown(ControllerModule.AXIS_RIGHT_STICK_X)):
-        print("RS_X=%d" % ControllerModule.getAxisValue(ControllerModule.AXIS_RIGHT_STICK_Y))
+        print("RS_X=%d" % ControllerModule.getAxisValue(ControllerModule.AXIS_RIGHT_STICK_X))
 
     if(ControllerModule.getAxisDown(ControllerModule.AXIS_RIGHT_STICK_Y)):
         print("RS_Y=%d" % ControllerModule.getAxisValue(ControllerModule.AXIS_RIGHT_STICK_Y))
