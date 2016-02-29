@@ -4,6 +4,7 @@
 import serial
 import SimpleCV
 from threading import Thread
+from Ds4Controller.src import controller
 
 # Global Variables
 arduino = serial.Serial('/dev/ttyACM0', 9600)  # USB serial connection with baud rate of 9600
@@ -12,8 +13,9 @@ cam = SimpleCV.Camera()
 
 # Main Method
 def main():
-
+    
     print("Serial connected on " + arduino.name)
+    controller = newController()
     camera_thread = ImageThread(cam)
     camera_thread.start()
     while True:
