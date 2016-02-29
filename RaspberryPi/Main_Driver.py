@@ -8,8 +8,17 @@ from threading import Thread, Event
 from Queue import Queue
 
 # Global Variables
-arduino = serial.Serial('/dev/ttyACM0', 9600)  # USB serial connection with baud rate of 9600
-cam = SimpleCV.Camera()
+VIRTUAL_DEV_MODE = True
+
+if VIRTUAL_DEV_MODE:
+    ARDUINO = serial.Serial('COM4', 9600)
+else:
+    ARDUINO = serial.Serial('/dev/ttyACM0', 9600)  # USB serial connection with baud rate of 9600
+
+if VIRTUAL_DEV_MODE:
+    CAMERA = SimpleCV.VirtualCamera("black.jpg", "image")
+else:
+    CAMERA = SimpleCV.Camera()
 
 
 # Main Method
@@ -17,10 +26,10 @@ def main():
 
     image_queue = Queue()
 
-    print("Serial connected on " + arduino.name)
+    print("Serial connected on " + ARDUINO.name)
 
     # Thread setup and start
-    camera_thread = ImageCaptureThread(cam, image_queue)
+    camera_thread = ImageCaptureThread(CAMERA, image_queue)
     img_display_thread = ImageDisplayThread(image_queue)
     camera_thread.start()
     img_display_thread.start()
@@ -33,7 +42,13 @@ def main():
         except ValueError:
             left_wheels = "0"
             right_wheels = "0"
-        formatted_wheel_speeds = format_wheel_speeds(left_wheels) + format_wheel_speeds(right_wheels)
+
+        if VIRTUAL_DEV_MODE:
+            formatted_wheel_speeds = "0 0"
+            print "Left Wheels: %s Right Wheels: %s" % \
+                  (format_wheel_speeds(left_wheels), format_wheel_speeds(right_wheels))
+        else:
+            formatted_wheel_speeds = format_wheel_speeds(left_wheels) + format_wheel_speeds(right_wheels)
 
         set_ardunio_wheel_speeds(formatted_wheel_speeds)
         command = str(raw_input("Enter Car Commands: "))
@@ -68,7 +83,7 @@ def format_wheel_speeds(input_speeds):
 
 
 def set_ardunio_wheel_speeds(command):
-    arduino.write(command)
+    ARDUINO.write(command)
 
 
 # Class for handling streaming from webcam
@@ -85,8 +100,9 @@ class ImageCaptureThread(Thread):
         while not self.thread_kill_request.is_set():
             if self.img_queue.qsize() < 10:
                 try:
-                    img = cam.getImage()
+                    img = CAMERA.getImage()
                     self.img_queue.put(img)
+                    sleep(.05)
                 except self.img_queue.Empty:
                     continue
 
