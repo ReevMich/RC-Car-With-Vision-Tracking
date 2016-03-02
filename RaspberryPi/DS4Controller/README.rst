@@ -19,20 +19,28 @@ How to use in (Python)
     # This is an example of how this module is used in a python script.
     # For further understanding please visit the documentation.
     
-    import ControllerModule
+     # creates a new controller object.
+    ds4 = controller.newController()
     
-    controller = ControllerModule.newControllerOBJ()
-     
-    while(controller.active):
-        if(ControllerModule.getAxisDown(ControllerModule.AXIS_R2)):
-            print("R2=%d" % ControllerModule.getAxisValue(ControllerModule.AXIS_R2))
-    
-        if(ControllerModule.getAxisDown(ControllerModule.AXIS_LEFT_STICK_X)):
-            print("LS_X=%d" % ControllerModule.getAxisValue(ControllerModule.AXIS_LEFT_STICK_X))
-    
-        if(ControllerModule.getAxisDown(ControllerModule.AXIS_LEFT_STICK_Y)):
-            print("LS_Y=%d" % ControllerModule.getAxisValue(ControllerModule.AXIS_LEFT_STICK_Y))
+    # checks if the controller is still active.
+    while(ds4.active):
+        if(controller.getAxisDown(controller.AXIS_R2)):
+            print("R2=%d" % controller.getAxisValue(controller.AXIS_R2))
 
+        if(controller.getAxisDown(controller.AXIS_L2)):
+            print("L2=%d" % controller.getAxisValue(controller.AXIS_L2))
+
+        if(controller.getAxisDown(controller.AXIS_LEFT_STICK_X)):
+            print("LS_X=%d" % controller.getAxisValue(controller.AXIS_LEFT_STICK_X))
+
+        if(controller.getAxisDown(controller.AXIS_LEFT_STICK_Y)):
+            print("LS_Y=%d" % controller.getAxisValue(controller.AXIS_LEFT_STICK_Y))
+
+        if(controller.getAxisDown(controller.AXIS_RIGHT_STICK_X)):
+            print("RS_X=%d" % controller.getAxisValue(controller.AXIS_RIGHT_STICK_X))
+
+        if(controller.getAxisDown(controller.AXIS_RIGHT_STICK_Y)):
+            print("RS_Y=%d" % controller.getAxisValue(controller.AXIS_RIGHT_STICK_Y))
 
 Controller Constants
 --------------------
