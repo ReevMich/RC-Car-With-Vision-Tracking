@@ -6,25 +6,20 @@ import SimpleCV
 from time import sleep
 from threading import Thread, Event
 from Queue import Queue
+from DS4Controller import ControllerModule
 
 # Global Variables
-VIRTUAL_DEV_MODE = True
 
-if VIRTUAL_DEV_MODE:
-    ARDUINO = serial.Serial('COM4', 9600)
-else:
-    ARDUINO = serial.Serial('/dev/ttyACM0', 9600)  # USB serial connection with baud rate of 9600
-
-if VIRTUAL_DEV_MODE:
-    CAMERA = SimpleCV.VirtualCamera("black.jpg", "image")
-else:
-    CAMERA = SimpleCV.Camera()
+ARDUINO = serial.Serial('/dev/ttyACM0', 9600)  # USB serial connection with baud rate of 9600
+CAMERA = SimpleCV.Camera()
 
 
 # Main Method
 def main():
 
     image_queue = Queue()
+
+    controller = ControllerModule.newControllerOBJ()
 
     print("Serial connected on " + ARDUINO.name)
 
@@ -34,29 +29,30 @@ def main():
     camera_thread.start()
     img_display_thread.start()
 
-    command = str(raw_input("Enter Car Commands: "))
-    while len(command) is not 0:
+    x_pressed = False
+    while controller.active and x_pressed is False:
 
         try:
-            left_wheels, right_wheels = command.split(" ")
+            left_wheels = ControllerModule.getAxisValue(ControllerModule.AXIS_LEFT_STICK_Y)
+            right_wheels = ControllerModule.getAxisValue(ControllerModule.AXIS_RIGHT_STICK_Y)
         except ValueError:
             left_wheels = "0"
             right_wheels = "0"
 
-        if VIRTUAL_DEV_MODE:
-            formatted_wheel_speeds = "0 0"
-            print "Left Wheels: %s Right Wheels: %s" % \
-                  (format_wheel_speeds(left_wheels), format_wheel_speeds(right_wheels))
-        else:
-            formatted_wheel_speeds = format_wheel_speeds(left_wheels) + format_wheel_speeds(right_wheels)
+        print "Left: %d Right: %d" % (left_wheels, right_wheels)
+        set_ardunio_wheel_speeds(left_wheels, right_wheels)
 
-        set_ardunio_wheel_speeds(formatted_wheel_speeds)
-        command = str(raw_input("Enter Car Commands: "))
+        if ControllerModule.getKeyDown(ControllerModule.BTN_CROSS):
+            x_pressed = True
 
+        sleep(.05)
+
+    # Kill Threads
     camera_thread.join()
     img_display_thread.join()
 
-    set_ardunio_wheel_speeds("00000000")
+    # Stop car from moving
+    set_ardunio_wheel_speeds("0", "0")
 
     sleep(1)  # Give time for threads to close
     # Clears the image queue of all images before close
@@ -65,7 +61,7 @@ def main():
 
 
 # Takes in a wheel speed and formats it for the arduino
-def format_wheel_speeds(input_speeds):
+def format_speeds(input_speeds):
 
     try:
         wheel_init = int(input_speeds)
@@ -82,8 +78,10 @@ def format_wheel_speeds(input_speeds):
     return wheel
 
 
-def set_ardunio_wheel_speeds(command):
-    ARDUINO.write(command)
+# Takes in the two wheels speeds and formats them and sends them to the arduino
+def set_ardunio_wheel_speeds(left, right):
+    wheel_speeds = format_speeds(left) + format_speeds(right)
+    ARDUINO.write(wheel_speeds)
 
 
 # Class for handling streaming from webcam
