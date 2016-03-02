@@ -1,4 +1,5 @@
 #include "DS4.h"
+#include <errno.h>
 
 static int js_fd;
 
@@ -52,7 +53,7 @@ void deviceInfo(Controller controller){
 // Runs all the necessary functions to ensure connectivity
 void Initialize(Controller controller){
   int fd = open(JOYSTICK_DEVICE, O_RDONLY);
-
+  int errorNum;
   if(fd > 0){
     char name[128];
     int version;
@@ -80,8 +81,10 @@ void Initialize(Controller controller){
     pthread_attr_t attr;
     pthread_attr_init(&attr);
     pthread_create(&controller->thread,&attr, Loop, (void*)controller);
+  } else {
+    errorNum = fd;
+    fprintf(stderr, "Error: problem opening controller input file: %s\nError: the controller is not connected.\n", strerror( errorNum ));
   }
-
 }
 
 //TODO: ADD COMMAND PARAMETER IN THE CONSTRUCTOR
