@@ -4,9 +4,9 @@
 
 import controller
 
-controller = controller.newController()
+me = controller.newController()
  
-while(controller.active):
+while(me.active):
     if(controller.getAxisDown(controller.AXIS_R2)):
         print("R2=%d" % controller.getAxisValue(controller.AXIS_R2))
 

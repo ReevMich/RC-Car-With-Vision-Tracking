@@ -1,6 +1,6 @@
 #!/bin/bash
 
 shopt -s extglob
-rm -rf !(__init__.py|init.sh|setup.py|test.py|controller.c|controller.i|controller.h)
+rm -rf !(__init__.py|init.sh|setup.py|test.py|DS4.c|DS4.i|DS4.h)
 python setup.py build_ext --inplace
 

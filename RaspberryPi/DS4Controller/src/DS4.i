@@ -1,7 +1,7 @@
 
 %module controller
 %{
-#include "controller.h"
+#include "DS4.h"
 
   void Initialize(Controller parameters);
   void* Loop(void*);
@@ -13,7 +13,7 @@
   void deviceInfo(Controller);
   Controller newController(void);
 %}
-#include "controller.h"
+#include "DS4.h"
 
 typedef struct controller * Controller;
 struct controller {
