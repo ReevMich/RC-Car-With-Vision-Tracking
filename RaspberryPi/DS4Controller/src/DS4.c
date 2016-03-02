@@ -1,4 +1,4 @@
-#include "controller.h"
+#include "DS4.h"
 
 static int js_fd;
 
@@ -7,13 +7,13 @@ static js_state state;
 // static functions must be defined in the file their used in.
 static int GetRawAxis(int inputValue);
 static void ReadEvent(struct js_event *jse);
-static void deleteControllerOBJ(ControllerOBJ controller);
+static void deleteController(Controller controller);
 
 // Loop -- The infinite loop that will get any sort
 // of input from the device.
 void* Loop(void* parameters){
   
-  ControllerOBJ controller = (ControllerOBJ)parameters; 
+  Controller controller = (Controller)parameters; 
   struct js_event jse;
   
   while(controller->active){
@@ -41,7 +41,7 @@ static void ReadEvent(struct js_event *jse){
   
 }
 
-void deviceInfo(ControllerOBJ controller){
+void deviceInfo(Controller controller){
   printf("\t============================================================\n\n");
   printf("\tDevice Name: %s\n",controller->name);
   printf("\tDevice Driver Version: %d\n\n", controller->version);
@@ -50,7 +50,7 @@ void deviceInfo(ControllerOBJ controller){
 
 // Private methods -----------------------------------------------
 // Runs all the necessary functions to ensure connectivity
-void Initialize(ControllerOBJ controller){
+void Initialize(Controller controller){
   int fd = open(JOYSTICK_DEVICE, O_RDONLY);
 
   if(fd > 0){
@@ -86,20 +86,20 @@ void Initialize(ControllerOBJ controller){
 
 //TODO: ADD COMMAND PARAMETER IN THE CONSTRUCTOR
 // Public methods ------------------------------------------------
-ControllerOBJ newControllerOBJ(void) {
-  ControllerOBJ controller = (ControllerOBJ) malloc(sizeof(struct controllerobj));
-  bzero(controller, sizeof(struct controllerobj));
+Controller newController(void) {
+  Controller controller = (Controller) malloc(sizeof(struct controller));
+  bzero(controller, sizeof(struct controller));
 
   Initialize(controller);
   
   return controller;
 }
 
-static void deleteControllerOBJ(ControllerOBJ controller) {
+static void deleteController(Controller controller) {
   free(controller);
 }
 
-bool getActiveState(ControllerOBJ controller){
+bool getActiveState(Controller controller){
   return controller->active;
 }
 
@@ -112,8 +112,8 @@ bool getKeyDown (int button){
 
 bool getAxisDown (int axis){
 
-  if(axis == AXIS_LEFT_STICK_X || axis == AXIS_LEFT_STICK_Y ||
-     axis == AXIS_RIGHT_STICK_X || axis == AXIS_RIGHT_STICK_Y){
+  if((axis == AXIS_LEFT_STICK_X || axis == AXIS_LEFT_STICK_Y) ||
+     (axis == AXIS_RIGHT_STICK_X || axis == AXIS_RIGHT_STICK_Y)){
 
     if((state.axis[axis] >= 0 || state.axis[axis] <= 100) && state.axis[axis] != 50){
       return true;
@@ -142,13 +142,13 @@ static int GetRawAxis(int inputValue)
   return value;
 }
 
-char* getControllerName(ControllerOBJ controller){
+char* getControllerName(Controller controller){
   return controller->name;
 }
 
 
 
-void shutDown(ControllerOBJ controller){
+void shutDown(Controller controller){
   printf("Shutting Down %s...\n", getControllerName(controller));
   if(controller == NULL){
     puts("Done...");
@@ -160,7 +160,7 @@ void shutDown(ControllerOBJ controller){
   puts("Stopping Running Thread....");
   sleep(3);
   puts("Freeing up memory...");
-  deleteControllerOBJ(controller);
+  deleteController(controller);
   sleep(3);
   puts("Done..");
 }

@@ -63,9 +63,9 @@ typedef enum KeyCode{
 
 // creates a new type definition of a struct named controllerobj and
 // points it to the ControllerOBJ name
-typedef struct controllerobj * ControllerOBJ;
+typedef struct controller * Controller;
 
-struct controllerobj {
+struct controller {
   char* name;
   int version;
   char* numAxis; // Add functionality for this later
@@ -81,9 +81,3 @@ typedef struct js_state {
   int button[NUMBER_OF_BUTTONS]; // Contains the states of all the buttons
   int axis[NUMBER_OF_BUTTONS]; // Contains the states of all the axis
 } js_state;
-
-
-// ========================================================================
-//                             MAIN FUNCTIONS
-// ========================================================================
-

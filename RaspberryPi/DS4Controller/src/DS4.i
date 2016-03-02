@@ -1,22 +1,22 @@
 
-%module ControllerModule
+%module controller
 %{
-#include "controller.h"
+#include "DS4.h"
 
-  void Initialize(ControllerOBJ parameters);
+  void Initialize(Controller parameters);
   void* Loop(void*);
-  void shutDown(ControllerOBJ);
+  void shutDown(Controller);
   bool getKeyDown(int);
   bool getAxisDown(int);
   int getAxisValue(int);
-  char* getControllerName(ControllerOBJ);
-  void deviceInfo(ControllerOBJ);
-  ControllerOBJ newControllerOBJ(void);
+  char* getControllerName(Controller);
+  void deviceInfo(Controller);
+  Controller newController(void);
 %}
-#include "controller.h"
+#include "DS4.h"
 
-typedef struct controllerobj * ControllerOBJ;
-struct controllerobj {
+typedef struct controller * Controller;
+struct controller {
   char* name;
   int version;
   char* numAxis;
@@ -52,12 +52,12 @@ typedef enum KeyCode{
   AXIS_DOWN_DPAD = 10
 }keycode;
 
-void Initialize(ControllerOBJ);
+void Initialize(Controller);
 void* Loop(void*);
-void shutDown(ControllerOBJ);
+void shutDown(Controller);
 bool getKeyDown(int);
 bool getAxisDown(int);
 int getAxisValue(int);
-char* getControllerName(ControllerOBJ);
-void deviceInfo(ControllerOBJ);
-ControllerOBJ newControllerOBJ(void);
+char* getControllerName(Controller);
+void deviceInfo(Controller);
+Controller newController(void);

@@ -6,7 +6,7 @@ import SimpleCV
 from time import sleep
 from threading import Thread, Event
 from Queue import Queue
-from DS4Controller import ControllerModule
+from DS4Controller.src import controller
 
 # Global Variables
 
@@ -19,13 +19,14 @@ def main():
 
     image_queue = Queue()
 
-    controller = ControllerModule.newControllerOBJ()
+    ds4_controller = controller.newController()
 
     print("Serial connected on " + ARDUINO.name)
 
     # Thread setup and start
     camera_thread = ImageCaptureThread(CAMERA, image_queue)
     img_display_thread = ImageDisplayThread(image_queue)
+
     camera_thread.start()
     img_display_thread.start()
 
@@ -33,8 +34,8 @@ def main():
     while controller.active and x_pressed is False:
 
         try:
-            left_wheels = ControllerModule.getAxisValue(ControllerModule.AXIS_LEFT_STICK_Y)
-            right_wheels = ControllerModule.getAxisValue(ControllerModule.AXIS_RIGHT_STICK_Y)
+            left_wheels = controller.getAxisValue(controller.AXIS_LEFT_STICK_Y)
+            right_wheels = controller.getAxisValue(controller.AXIS_RIGHT_STICK_Y)
         except ValueError:
             left_wheels = "0"
             right_wheels = "0"
@@ -42,7 +43,7 @@ def main():
         print "Left: %d Right: %d" % (left_wheels, right_wheels)
         set_ardunio_wheel_speeds(left_wheels, right_wheels)
 
-        if ControllerModule.getKeyDown(ControllerModule.BTN_CROSS):
+        if controller.getKeyDown(controller.BTN_CROSS):
             x_pressed = True
 
         sleep(.05)
