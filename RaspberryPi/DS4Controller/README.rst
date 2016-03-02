@@ -10,7 +10,7 @@ How to use in (Python)
 - Navigate to the **DS4Controller** folder and run the **run.sh** script.
     - DO NOT CHANGE THE FILE UNLESS YOU KNOW WHAT YOURE DOING.
 
-- In order to implement the DS4 controller module into a python project, you have to 'import ControllerModule'.
+- In order to implement the DS4 controller module into a python project, you have to 'import controller'.
 - Below is an example of a file that uses this module.
 
 .. code-block:: python
