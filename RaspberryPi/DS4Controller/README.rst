@@ -18,6 +18,7 @@ How to use in (Python)
     # file: test.py
     # This is an example of how this module is used in a python script.
     # For further understanding please visit the documentation.
+    from DS4Controller.src import controller
     
      # creates a new controller object.
     ds4 = controller.newController()
