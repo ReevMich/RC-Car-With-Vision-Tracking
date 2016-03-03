@@ -3,10 +3,12 @@
 # Imports
 import serial
 import SimpleCV
-from time import sleep
+from time import sleep, time
 from threading import Thread, Event
 from Queue import Queue
 from DS4Controller.src import controller
+import RPi.GPIO as GPIO
+
 
 # Global Variables
 
@@ -14,9 +16,21 @@ ARDUINO = serial.Serial('/dev/ttyACM0', 9600)  # USB serial connection with baud
 CAMERA = SimpleCV.Camera()
 WRITE_ARDUINO = True
 
+TRIG = 23
+ECHO = 24
+
 
 # Main Method
 def main():
+
+    GPIO.setmode(GPIO.BCM)
+
+    GPIO.setup(TRIG,GPIO.OUT)
+    GPIO.setup(ECHO,GPIO.IN)
+
+    GPIO.output(TRIG, False)
+    print "Waiting For Sensor To Settle"
+    time.sleep(.5)
 
     image_queue = Queue()
 
@@ -139,20 +153,39 @@ class ImageDisplayThread(Thread):
         super(ImageDisplayThread, self).join(timeout)
 
 
-# Thread for handling displaying the image
+# Thread for handling distance Sensor
 class DistanceSensorThread(Thread):
     # Initial Setup for thread
     def __init__(self):
         Thread.__init__(self)
         self.thread_kill_request = Event()
 
-    # Displays the image
+    # Runs the sensor
     def run(self):
         global WRITE_ARDUINO
         while not self.thread_kill_request.is_set():
-            distance = 20
+            sleep(.25)
 
-            if distance < 20:
+            GPIO.output(TRIG, True)
+            sleep(0.00001)
+            GPIO.output(TRIG, False)
+
+            pulse_start, pulse_end = (0, 0)
+
+            while GPIO.input(ECHO) == 0:
+                pulse_start = time()
+
+            while GPIO.input(ECHO) == 1:
+                pulse_end = time()
+
+            pulse_duration = pulse_end - pulse_start
+
+            distance = pulse_duration * 17150
+
+            distance = round(distance, 2)
+            print "Distance: %f cm" % distance
+
+            if distance < 20.0:
                 WRITE_ARDUINO = False
             else:
                 WRITE_ARDUINO = True
