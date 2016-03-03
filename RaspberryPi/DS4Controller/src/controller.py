@@ -173,6 +173,9 @@ BTN_LEFT_STICK = _controller.BTN_LEFT_STICK
 _controller.BTN_RIGHT_STICK_swigconstant(_controller)
 BTN_RIGHT_STICK = _controller.BTN_RIGHT_STICK
 
+_controller.BTN_PS_swigconstant(_controller)
+BTN_PS = _controller.BTN_PS
+
 _controller.AXIS_LEFT_STICK_X_swigconstant(_controller)
 AXIS_LEFT_STICK_X = _controller.AXIS_LEFT_STICK_X
 
@@ -215,9 +218,9 @@ def shutDown(arg1):
     return _controller.shutDown(arg1)
 shutDown = _controller.shutDown
 
-def getKeyDown(arg1):
-    return _controller.getKeyDown(arg1)
-getKeyDown = _controller.getKeyDown
+def getButtonDown(arg1):
+    return _controller.getButtonDown(arg1)
+getButtonDown = _controller.getButtonDown
 
 def getAxisDown(arg1):
     return _controller.getAxisDown(arg1)

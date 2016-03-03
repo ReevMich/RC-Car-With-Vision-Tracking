@@ -42,6 +42,7 @@ typedef enum KeyCode{
   BTN_OPTIONS = 9,
   BTN_LEFT_STICK = 10,
   BTN_RIGHT_STICK = 11,
+  BTN_PS = 12,
   AXIS_LEFT_STICK_X = 0,
   AXIS_LEFT_STICK_Y = 1,
   AXIS_RIGHT_STICK_X = 2,

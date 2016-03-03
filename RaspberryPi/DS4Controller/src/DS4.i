@@ -6,7 +6,7 @@
   void Initialize(Controller parameters);
   void* Loop(void*);
   void shutDown(Controller);
-  bool getKeyDown(int);
+  bool getButtonDown(int);
   bool getAxisDown(int);
   int getAxisValue(int);
   char* getControllerName(Controller);
@@ -39,6 +39,7 @@ typedef enum KeyCode{
   BTN_OPTIONS = 9,
   BTN_LEFT_STICK = 10,
   BTN_RIGHT_STICK = 11,
+  BTN_PS = 12,
   /////////////////////
   AXIS_LEFT_STICK_X = 0,
   AXIS_LEFT_STICK_Y = 1,
@@ -55,7 +56,7 @@ typedef enum KeyCode{
 void Initialize(Controller);
 void* Loop(void*);
 void shutDown(Controller);
-bool getKeyDown(int);
+bool getButtonDown(int);
 bool getAxisDown(int);
 int getAxisValue(int);
 char* getControllerName(Controller);

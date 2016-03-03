@@ -106,7 +106,7 @@ bool getActiveState(Controller controller){
   return controller->active;
 }
 
-bool getKeyDown (int button){
+bool getButtonDown (int button){
   if(state.button[button]>0){
     return true;
   }
