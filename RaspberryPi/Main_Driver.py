@@ -12,6 +12,7 @@ from DS4Controller.src import controller
 
 ARDUINO = serial.Serial('/dev/ttyACM0', 9600)  # USB serial connection with baud rate of 9600
 CAMERA = SimpleCV.Camera()
+WRITE_ARDUINO = True
 
 
 # Main Method
@@ -26,31 +27,35 @@ def main():
     # Thread setup and start
     camera_thread = ImageCaptureThread(CAMERA, image_queue)
     img_display_thread = ImageDisplayThread(image_queue)
+    distance_thread = DistanceSensorThread()
 
     camera_thread.start()
     img_display_thread.start()
+    distance_thread.start()
 
     x_pressed = False
-    while controller.active and x_pressed is False:
+    while ds4_controller.active and x_pressed is False:
 
-        try:
-            left_wheels = controller.getAxisValue(controller.AXIS_LEFT_STICK_Y)
-            right_wheels = controller.getAxisValue(controller.AXIS_RIGHT_STICK_Y)
-        except ValueError:
-            left_wheels = "0"
-            right_wheels = "0"
+        if WRITE_ARDUINO:
+            try:
+                left_wheels = controller.getAxisValue(controller.AXIS_LEFT_STICK_Y)
+                right_wheels = controller.getAxisValue(controller.AXIS_RIGHT_STICK_Y)
+            except ValueError:
+                left_wheels = "0"
+                right_wheels = "0"
 
-        print "Left: %d Right: %d" % (left_wheels, right_wheels)
-        set_ardunio_wheel_speeds(left_wheels, right_wheels)
+            print "Left: %d Right: %d" % (left_wheels, right_wheels)
+            set_ardunio_wheel_speeds(left_wheels, right_wheels)
 
-        if controller.getKeyDown(controller.BTN_CROSS):
-            x_pressed = True
+            if controller.getKeyDown(controller.BTN_CROSS):
+                x_pressed = True
 
         sleep(.05)
 
     # Kill Threads
     camera_thread.join()
     img_display_thread.join()
+    distance_thread.join()
 
     # Stop car from moving
     set_ardunio_wheel_speeds("0", "0")
@@ -132,6 +137,30 @@ class ImageDisplayThread(Thread):
     def join(self, timeout=None):
         self.thread_kill_request.set()
         super(ImageDisplayThread, self).join(timeout)
+
+
+# Thread for handling displaying the image
+class DistanceSensorThread(Thread):
+    # Initial Setup for thread
+    def __init__(self):
+        Thread.__init__(self)
+        self.thread_kill_request = Event()
+
+    # Displays the image
+    def run(self):
+        global WRITE_ARDUINO
+        while not self.thread_kill_request.is_set():
+            distance = 20
+
+            if distance < 20:
+                WRITE_ARDUINO = False
+            else:
+                WRITE_ARDUINO = True
+
+    # Handles terminating the thread
+    def join(self, timeout=None):
+        self.thread_kill_request.set()
+        super(DistanceSensorThread, self).join(timeout)
 
 
 if __name__ == '__main__':
