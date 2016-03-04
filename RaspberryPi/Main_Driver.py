@@ -37,7 +37,7 @@ def main():
     print("Serial connected on " + ARDUINO.name)
 
     # Thread setup and start
-    #camera_thread = ImageCaptureThread(CAMERA, image_queue)
+    #camera_thread = ImageDisplayThread(CAMERA, image_queue)
     #img_display_thread = ImageDisplayThread(image_queue)
     #distance_thread = DistanceSensorThread()
     ds4_thread = DS4ControllerThread()
