@@ -98,27 +98,53 @@ class DS4ControllerThread(Thread):
 
     def run(self):
         global WRITE_ARDUINO
+        
+        # init ds4 controller
         ds4_controller = controller.newController()
+
+        # lets us know when to exit to program
         ps_pressed = False
+
+        #toggle for reverse
+        reverse = False
+        
+        # Speed of the wheels
         left_wheels = 0
         right_wheels = 0
+
+        # Keeps track of the previous values so that way we dont have to always send messages to the arduino.
         prev_left_value = 0
         prev_right_value = 0
+
+        # lets us know is any of the wheels values has changed.
         valuesChanged = False
         while not self.thread_kill_request.is_set() and ds4_controller.active and ps_pressed is False:
             if WRITE_ARDUINO :
+                if(controller.getButtonDown(controller.BTN_SQUARE)):
+                    reverse = True
+                    print "Reverse: On"
+                else:
+                    reverse = False
+                    
                 try:
-                    left_value = controller.getAxisValue(controller.AXIS_R2)
-                    right_value = controller.getAxisValue(controller.AXIS_L2)
-
+                  
+                    if(reverse == True):
+                        left_value = -controller.getAxisValue(controller.AXIS_R2)
+                        right_value = -controller.getAxisValue(controller.AXIS_L2)
+                    else:
+                        left_value = controller.getAxisValue(controller.AXIS_R2)
+                        right_value = controller.getAxisValue(controller.AXIS_L2)
+                    
                     valuesChanged = False
                     
                     if(prev_left_value != left_value):
                         left_wheels = left_value
                         valuesChanged = True
+                        
                     if(prev_right_value != right_value):
                         right_wheels = right_value
                         valuesChanged = True
+
                 except ValueError:
                     left_wheels = "0"
                     right_wheels = "0"
@@ -128,11 +154,11 @@ class DS4ControllerThread(Thread):
                     prev_left_value = left_wheels
                     prev_right_value = right_wheels
                     set_ardunio_wheel_speeds(left_wheels, right_wheels)
-
-                if controller.getButtonDown(controller.BTN_PS):
+                
+                if(controller.getButtonDown(controller.BTN_PS)):
                     controller.shutDown(ds4_controller)
                     ps_pressed = True
-                sleep(.05)
+                sleep(.1)
 
 
     # Handles terminating the thread
