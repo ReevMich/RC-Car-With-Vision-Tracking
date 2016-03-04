@@ -27,8 +27,8 @@ def main():
     print("Serial connected on " + ARDUINO.name)
 
     # Process setup and start
-    camera_capture_proc = Process(target=image_get_camera_image, args=image_queue)
-    camera_disp_proc = Process(target=image_processor_and_display, args=image_queue)
+    camera_capture_proc = Process(target=image_get_camera_image, args=(image_queue,))
+    camera_disp_proc = Process(target=image_processor_and_display, args=(image_queue,))
     dist_sensor_prc = Process(target=distance_sensor)
 
     camera_capture_proc.start()
@@ -171,7 +171,7 @@ def distance_sensor():
 
     GPIO.output(TRIG, False)
     print "Waiting For Sensor To Settle"
-    time.sleep(.5)
+    sleep(.5)
 
     while PROGRAM_RUNNING:
         sleep(.25)
