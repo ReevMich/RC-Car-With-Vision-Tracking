@@ -121,7 +121,7 @@ class ImageCaptureThread(Thread):
                     img = CAMERA.getImage()
                     self.img_queue.put(img)
                     sleep(.05)
-                except self.img_queue.Empty:
+                except self.img_queue.empty():
                     continue
 
     # Handles terminating the thread
@@ -144,7 +144,7 @@ class ImageDisplayThread(Thread):
             try:
                 img = self.img_queue.get()
                 img.show()
-            except self.img_queue.Empty:
+            except self.img_queue.empty():
                 continue
 
     # Handles terminating the thread
