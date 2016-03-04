@@ -2,10 +2,9 @@
 
 # Imports
 import serial
-#import SimpleCV
+import SimpleCV
 from time import sleep, time
-from threading import Thread, Event
-from Queue import Queue
+from multiprocessing import Process, Queue
 from DS4Controller.src import controller
 import RPi.GPIO as GPIO
 
@@ -13,8 +12,9 @@ import RPi.GPIO as GPIO
 # Global Variables
 
 ARDUINO = serial.Serial('/dev/ttyACM0', 9600)  # USB serial connection with baud rate of 9600
-#CAMERA = SimpleCV.Camera()
+CAMERA = SimpleCV.Camera()
 WRITE_ARDUINO = True
+PROGRAM_RUNNING = True
 
 TRIG = 23
 ECHO = 24
@@ -22,52 +22,38 @@ ECHO = 24
 
 # Main Method
 def main():
+    image_queue = Queue()
 
-   # GPIO.setmode(GPIO.BCM)
-
-   # GPIO.setup(TRIG,GPIO.OUT)
-   # GPIO.setup(ECHO,GPIO.IN)
-
-   # GPIO.output(TRIG, False)
-    print "Waiting For Sensor To Settle"
-    #time.sleep(.5)
-
-    #image_queue = Queue()
-    
     print("Serial connected on " + ARDUINO.name)
 
-    # Thread setup and start
-    #camera_thread = ImageDisplayThread(CAMERA, image_queue)
-    #img_display_thread = ImageDisplayThread(image_queue)
-    #distance_thread = DistanceSensorThread()
-    ds4_thread = DS4ControllerThread()
+    # Process setup and start
+    camera_capture_proc = Process(target=image_get_camera_image, args=image_queue)
+    camera_disp_proc = Process(target=image_processor_and_display, args=image_queue)
+    dist_sensor_prc = Process(target=distance_sensor)
 
-    #camera_thread.start()
-    #img_display_thread.start()
-    #distance_thread.start()
-    ds4_thread.start()
+    camera_capture_proc.start()
+    camera_disp_proc.start()
+    dist_sensor_prc.start()
 
-    while WRITE_ARDUINO:
-        a = 0
+    ds4_controller_process()
+
     # Kill Threads
-    #camera_thread.join()
-    #img_display_thread.join()
-    #distance_thread.join()
-    ds4_thread.join()
-    
+    camera_capture_proc.join()
+    camera_disp_proc.join()
+    dist_sensor_prc.join()
+
     # Stop car from moving
     print "something died"
     set_ardunio_wheel_speeds("0", "0")
 
     sleep(1)  # Give time for threads to close
     # Clears the image queue of all images before close
-    #with image_queue.mutex:
-        #image_queue.queue.clear()
+    with image_queue.mutex:
+        image_queue.queue.clear()
 
 
 # Takes in a wheel speed and formats it for the arduino
 def format_speeds(input_speeds):
-
     try:
         wheel_init = int(input_speeds)
     except ValueError:
@@ -89,147 +75,131 @@ def set_ardunio_wheel_speeds(left, right):
     ARDUINO.write(wheel_speeds)
 
 
-#Thread for handling the Dual Shock 4 Controller
-class DS4ControllerThread(Thread):
-    # Init
-    def __init__(self):
-        Thread.__init__(self)
-        self.thread_kill_request = Event()
+def ds4_controller_process():
+    global WRITE_ARDUINO
 
-    def run(self):
-        global WRITE_ARDUINO
-        
-        # init ds4 controller
-        ds4_controller = controller.newController()
+    # init ds4 controller
+    ds4_controller = controller.newController()
 
-        # lets us know when to exit to program
-        ps_pressed = False
+    # lets us know when to exit to program
+    ps_pressed = False
 
-        #toggle for reverse
-        reverse = False
-        
-        # Speed of the wheels
-        left_wheels = 0
-        right_wheels = 0
+    # toggle for reverse
+    reverse = False
 
-        # Keeps track of the previous values so that way we dont have to always send messages to the arduino.
-        prev_left_value = 0
-        prev_right_value = 0
+    # Speed of the wheels
+    left_wheels = 0
+    right_wheels = 0
 
-        # lets us know is any of the wheels values has changed.
-        valuesChanged = False
-        while not self.thread_kill_request.is_set() and ds4_controller.active and ps_pressed is False:
-            if WRITE_ARDUINO :
-                if(controller.getButtonDown(controller.BTN_SQUARE)):
-                    reverse = True
-                    print "Reverse: On"
-                else:
-                    reverse = False
-                    
-                try:
-                  
-                    if(reverse == True):
-                        left_value = -controller.getAxisValue(controller.AXIS_R2)
-                        right_value = -controller.getAxisValue(controller.AXIS_L2)
-                    else:
-                        left_value = controller.getAxisValue(controller.AXIS_R2)
-                        right_value = controller.getAxisValue(controller.AXIS_L2)
-                    
-                    valuesChanged = False
-                    
-                    if(prev_left_value != left_value):
-                        left_wheels = left_value
-                        valuesChanged = True
-                        
-                    if(prev_right_value != right_value):
-                        right_wheels = right_value
-                        valuesChanged = True
+    # Keeps track of the previous values so that way we dont have to always send messages to the arduino.
+    prev_left_value = 0
+    prev_right_value = 0
 
-                except ValueError:
-                    left_wheels = "0"
-                    right_wheels = "0"
-
-                print "Left: %d Right: %d" % (left_wheels, right_wheels)
-                if(valuesChanged == True):
-                    prev_left_value = left_wheels
-                    prev_right_value = right_wheels
-                    set_ardunio_wheel_speeds(left_wheels, right_wheels)
-                
-                if(controller.getButtonDown(controller.BTN_PS)):
-                    controller.shutDown(ds4_controller)
-                    ps_pressed = True
-                sleep(.1)
-
-
-    # Handles terminating the thread
-    def join(self, timeout=None):
-        self.thread_kill_request.set()
-        super(DS4ControllerThread, self).join(timeout)
-
-
-# Thread for handling displaying the image
-class ImageDisplayThread(Thread):
-    # Initial Setup for thread
-    def __init__(self, img_queue):
-        Thread.__init__(self)
-        self.img_queue = img_queue
-        self.thread_kill_request = Event()
-
-    # Displays the image
-    def run(self):
-        while not self.thread_kill_request.is_set():
-            try:
-                img = self.img_queue.get()
-                img.show()
-            except self.img_queue.empty():
-                continue
-
-    # Handles terminating the thread
-    def join(self, timeout=None):
-        self.thread_kill_request.set()
-        super(ImageDisplayThread, self).join(timeout)
-
-# Thread for handling distance Sensor
-class DistanceSensorThread(Thread):
-    # Initial Setup for thread
-    def __init__(self):
-        Thread.__init__(self)
-        self.thread_kill_request = Event()
-
-    # Runs the sensor
-    def run(self):
-        global WRITE_ARDUINO
-        while not self.thread_kill_request.is_set():
-            sleep(.25)
-
-            GPIO.output(TRIG, True)
-            sleep(0.00001)
-            GPIO.output(TRIG, False)
-
-            pulse_start, pulse_end = (0, 0)
-
-            while GPIO.input(ECHO) == 0:
-                pulse_start = time()
-
-            while GPIO.input(ECHO) == 1:
-                pulse_end = time()
-
-            pulse_duration = pulse_end - pulse_start
-
-            distance = pulse_duration * 17150
-
-            distance = round(distance, 2)
-            print "Distance: %f cm" % distance
-
-            if distance < 20.0:
-                WRITE_ARDUINO = False
+    # lets us know is any of the wheels values has changed.
+    values_changed = False
+    while ds4_controller.active and ps_pressed is False:
+        if WRITE_ARDUINO:
+            if controller.getButtonDown(controller.BTN_SQUARE):
+                reverse = True
+                print "Reverse: On"
             else:
-                WRITE_ARDUINO = True
+                reverse = False
 
-    # Handles terminating the thread
-    def join(self, timeout=None):
-        self.thread_kill_request.set()
-        super(DistanceSensorThread, self).join(timeout)
+            try:
+                if reverse is True:
+                    left_value = -controller.getAxisValue(controller.AXIS_R2)
+                    right_value = -controller.getAxisValue(controller.AXIS_L2)
+                else:
+                    left_value = controller.getAxisValue(controller.AXIS_R2)
+                    right_value = controller.getAxisValue(controller.AXIS_L2)
+
+                values_changed = False
+
+                if prev_left_value != left_value:
+                    left_wheels = left_value
+                    values_changed = True
+
+                if prev_right_value != right_value:
+                    right_wheels = right_value
+                    values_changed = True
+
+            except ValueError:
+                left_wheels = "0"
+                right_wheels = "0"
+
+            print "Left: %d Right: %d" % (left_wheels, right_wheels)
+            if values_changed is True:
+                prev_left_value = left_wheels
+                prev_right_value = right_wheels
+                set_ardunio_wheel_speeds(left_wheels, right_wheels)
+
+            if controller.getButtonDown(controller.BTN_PS):
+                controller.shutDown(ds4_controller)
+                ps_pressed = True
+            sleep(.1)
+
+
+def image_get_camera_image(queue):
+    img_queue = queue
+
+    while PROGRAM_RUNNING and img_queue.qsize():
+        try:
+            img = CAMERA.getImage()
+            img_queue.put(img)
+        except img_queue.empty:
+            continue
+
+
+def image_processor_and_display(queue):
+    img_queue = queue
+
+    while PROGRAM_RUNNING:
+        try:
+            img = img_queue.get()
+            img.show()
+        except img_queue.empty():
+            continue
+
+
+def distance_sensor():
+    global WRITE_ARDUINO
+
+    GPIO.setmode(GPIO.BCM)
+
+    GPIO.setup(TRIG, GPIO.OUT)
+    GPIO.setup(ECHO, GPIO.IN)
+
+    GPIO.output(TRIG, False)
+    print "Waiting For Sensor To Settle"
+    time.sleep(.5)
+
+    while PROGRAM_RUNNING:
+        sleep(.25)
+
+        GPIO.output(TRIG, True)
+        sleep(0.00001)
+        GPIO.output(TRIG, False)
+
+        pulse_start, pulse_end = (0, 0)
+
+        while GPIO.input(ECHO) == 0:
+            pulse_start = time()
+
+        while GPIO.input(ECHO) == 1:
+            pulse_end = time()
+
+        pulse_duration = pulse_end - pulse_start
+
+        distance = pulse_duration * 17150
+
+        distance = round(distance, 2)
+        print "Distance: %f cm" % distance
+
+        if distance < 20.0:
+            set_ardunio_wheel_speeds(0, 0)
+            WRITE_ARDUINO = False
+        else:
+            WRITE_ARDUINO = True
 
 
 if __name__ == '__main__':
