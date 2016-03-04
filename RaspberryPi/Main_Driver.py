@@ -111,8 +111,8 @@ class DS4ControllerThread(Thread):
         while not self.thread_kill_request.is_set() and ds4_controller.active and ps_pressed is False:
             if WRITE_ARDUINO :
                 try:
-                    left_value = controller.getAxisValue(controller.AXIS_L2)
-                    right_value = controller.getAxisValue(controller.AXIS_R2)
+                    left_value = controller.getAxisValue(controller.AXIS_R2)
+                    right_value = controller.getAxisValue(controller.AXIS_L2)
 
                     valuesChanged = False
                     
@@ -135,7 +135,7 @@ class DS4ControllerThread(Thread):
                 if controller.getButtonDown(controller.BTN_PS):
                     controller.shutDown(ds4_controller)
                     ps_pressed = True
-                sleep(.1)
+                sleep(.05)
 
     # Handles terminating the thread
     def join(self, timeout=None):
