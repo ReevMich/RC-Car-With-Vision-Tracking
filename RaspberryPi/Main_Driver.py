@@ -92,7 +92,7 @@ def ds4_controller_process():
     left_wheels = 0
     right_wheels = 0
 
-    # Keeps track of the previous values so that way we dont have to always send messages to the arduino.
+    # Keeps track of the previous values so that way we don't have to always send messages to the arduino.
     prev_left_value = 0
     prev_right_value = 0
 
@@ -137,9 +137,9 @@ def ds4_controller_process():
             if controller.getButtonDown(controller.BTN_PS):
                 controller.shutDown(ds4_controller)
                 ps_pressed = True
-		global PROGRAM_RUNNING
-		PROGRAM_RUNNING = false
-            sleep(.1)
+                global PROGRAM_RUNNING
+                PROGRAM_RUNNING = False
+            sleep(.25)
 
 
 def image_get_camera_image(queue):
@@ -177,7 +177,7 @@ def distance_sensor():
     sleep(.5)
 
     while PROGRAM_RUNNING:
-        sleep(.25)
+        sleep(.5)
 
         GPIO.output(TRIG, True)
         sleep(0.00001)
