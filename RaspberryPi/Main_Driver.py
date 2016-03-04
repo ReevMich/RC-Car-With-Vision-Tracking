@@ -33,8 +33,7 @@ def main():
     #time.sleep(.5)
 
     #image_queue = Queue()
-
-
+    
     print("Serial connected on " + ARDUINO.name)
 
     # Thread setup and start
@@ -49,9 +48,7 @@ def main():
     ds4_thread.start()
 
     while WRITE_ARDUINO:
-        me = 1;
-    
-    
+        a = 0
     # Kill Threads
     #camera_thread.join()
     #img_display_thread.join()
@@ -137,13 +134,34 @@ class DS4ControllerThread(Thread):
                     ps_pressed = True
                 sleep(.05)
 
+
     # Handles terminating the thread
     def join(self, timeout=None):
         self.thread_kill_request.set()
         super(DS4ControllerThread, self).join(timeout)
 
-            
 
+# Thread for handling displaying the image
+class ImageDisplayThread(Thread):
+    # Initial Setup for thread
+    def __init__(self, img_queue):
+        Thread.__init__(self)
+        self.img_queue = img_queue
+        self.thread_kill_request = Event()
+
+    # Displays the image
+    def run(self):
+        while not self.thread_kill_request.is_set():
+            try:
+                img = self.img_queue.get()
+                img.show()
+            except self.img_queue.empty():
+                continue
+
+    # Handles terminating the thread
+    def join(self, timeout=None):
+        self.thread_kill_request.set()
+        super(ImageDisplayThread, self).join(timeout)
 
 # Thread for handling distance Sensor
 class DistanceSensorThread(Thread):
