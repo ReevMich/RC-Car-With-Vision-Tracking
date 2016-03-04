@@ -124,6 +124,10 @@ class controller(_object):
     __swig_getmethods__["mode"] = _controller.controller_mode_get
     if _newclass:
         mode = _swig_property(_controller.controller_mode_get, _controller.controller_mode_set)
+    __swig_setmethods__["shuttingDown"] = _controller.controller_shuttingDown_set
+    __swig_getmethods__["shuttingDown"] = _controller.controller_shuttingDown_get
+    if _newclass:
+        shuttingDown = _swig_property(_controller.controller_shuttingDown_get, _controller.controller_shuttingDown_set)
 
     def __init__(self):
         this = _controller.new_controller()

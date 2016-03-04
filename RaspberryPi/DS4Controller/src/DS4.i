@@ -23,7 +23,8 @@ struct controller {
   char* numButtons; 
   pthread_t thread;
   int active;
-  int mode; 
+  int mode;
+  int shuttingDown;
 };
 
 typedef enum KeyCode{

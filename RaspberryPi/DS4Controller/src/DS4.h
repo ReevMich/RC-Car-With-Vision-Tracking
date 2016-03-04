@@ -74,6 +74,7 @@ struct controller {
   pthread_t thread;
   int active;
   int mode; // Add functionality so that we can incorporate more functionality to the controller.
+  int shuttingDown;
 };
 
 

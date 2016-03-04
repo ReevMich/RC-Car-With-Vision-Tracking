@@ -157,13 +157,14 @@ void shutDown(Controller controller){
     puts("Done...");
     return;
   }
+  controller->shuttingDown = true;
   puts("Please wait a few seconds....");
   controller->active = false;
-  pthread_cancel(controller->thread);
+  pthread_exit(&controller->thread);
   puts("Stopping Running Thread....");
-  sleep(3);
+  sleep(1);
   puts("Freeing up memory...");
+  controller->shuttingDown = false;
   deleteController(controller);
-  sleep(3);
   puts("Done..");
 }
