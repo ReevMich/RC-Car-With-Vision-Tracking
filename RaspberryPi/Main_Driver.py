@@ -71,8 +71,9 @@ def format_speeds(input_speeds):
 
 # Takes in the two wheels speeds and formats them and sends them to the arduino
 def set_ardunio_wheel_speeds(left, right):
-    wheel_speeds = format_speeds(left) + format_speeds(right)
-    ARDUINO.write(wheel_speeds)
+    if WRITE_ARDUINO:
+        wheel_speeds = format_speeds(left) + format_speeds(right)
+        ARDUINO.write(wheel_speeds)
 
 
 def ds4_controller_process():
@@ -136,13 +137,15 @@ def ds4_controller_process():
             if controller.getButtonDown(controller.BTN_PS):
                 controller.shutDown(ds4_controller)
                 ps_pressed = True
+		global PROGRAM_RUNNING
+		PROGRAM_RUNNING = false
             sleep(.1)
 
 
 def image_get_camera_image(queue):
     img_queue = queue
 
-    while PROGRAM_RUNNING and img_queue.qsize():
+    while PROGRAM_RUNNING and img_queue.qsize() <= 10:
         try:
             img = CAMERA.getImage()
             img_queue.put(img)
