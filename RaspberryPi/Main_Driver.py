@@ -27,19 +27,22 @@ def main():
     print("Serial connected on " + ARDUINO.name)
 
     # Process setup and start
-    camera_capture_proc = Process(target=image_get_camera_image, args=(image_queue,))
-    camera_disp_proc = Process(target=image_processor_and_display, args=(image_queue,))
+   # camera_capture_proc = Process(target=image_get_camera_image, args=(image_queue, CAMERA))
+    #camera_disp_proc = Process(target=image_processor_and_display, args=(image_queue,))
     dist_sensor_prc = Process(target=distance_sensor)
-
-    camera_capture_proc.start()
-    camera_disp_proc.start()
+    controller_ds4_proc = Process(target=ds4_controller_process)
+    
     dist_sensor_prc.start()
+    controller_ds4_proc.start()
 
-    ds4_controller_process()
+    image_get_camera_image(image_queue, CAMERA)
+
+    #ds4_controller_process()
 
     # Kill Threads
-    camera_capture_proc.join()
-    camera_disp_proc.join()
+    #camera_capture_proc.join()
+    #camera_disp_proc.join()
+    controller_ds4_proc.join()
     dist_sensor_prc.join()
 
     # Stop car from moving
@@ -142,15 +145,20 @@ def ds4_controller_process():
             sleep(.25)
 
 
-def image_get_camera_image(queue):
+def image_get_camera_image(queue, cam):
     img_queue = queue
+    camera = cam
 
-    while PROGRAM_RUNNING and img_queue.qsize() <= 10:
-        try:
-            img = CAMERA.getImage()
-            img_queue.put(img)
-        except img_queue.empty:
-            continue
+    while PROGRAM_RUNNING:
+        while img_queue.qsize() <= 10:
+            try:
+                img = camera.getImage()
+                img_queue.put(img)
+                t = img_queue.get()
+                t.show()
+                sleep(.1)
+            except img_queue.empty():
+                continue
 
 
 def image_processor_and_display(queue):
@@ -160,6 +168,7 @@ def image_processor_and_display(queue):
         try:
             img = img_queue.get()
             img.show()
+            sleep(.1)
         except img_queue.empty():
             continue
 
