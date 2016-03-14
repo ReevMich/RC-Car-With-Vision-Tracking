@@ -5,3 +5,7 @@ a.out
 *.txt
 *.o
 *.idea*
+*.emacs
+*.pyc
+*.so
+*_wrap*.c
