@@ -3,9 +3,11 @@
 # Imports
 
 import SimpleCV
+import thread
 from time import sleep
 from multiprocessing import Process, Queue
 from DS4Controller.src import controller
+
 import RPi.GPIO as GPIO
 
 
@@ -112,6 +114,17 @@ def ds4_controller_process():
                 else:
                     left_value = controller.getAxisValue(controller.AXIS_R2)
                     right_value = controller.getAxisValue(controller.AXIS_L2)
+
+class Image_Thread(thread):
+    def __init__(self):
+        self.camera = SimpleCV.Camera()
+
+    def run(self):
+        pass
+        
+    def join(self):
+        pass
+
 
 def distance_sensor():
     global WRITE_ARDUINO
