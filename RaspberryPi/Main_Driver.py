@@ -12,7 +12,7 @@ import RPi.GPIO as GPIO
 # Global Variables
 
 ARDUINO = serial.Serial('/dev/ttyACM0', 9600)  # USB serial connection with baud rate of 9600
-CAMERA = SimpleCV.Camera()
+#CAMERA = SimpleCV.Camera()
 WRITE_ARDUINO = True
 PROGRAM_RUNNING = True
 
@@ -24,15 +24,15 @@ ECHO = 24
 def main():
     image_queue = Queue()
 
-    print("Serial connected on " + ARDUINO.name)
+    #print("Serial connected on " + ARDUINO.name)
 
     # Process setup and start
    # camera_capture_proc = Process(target=image_get_camera_image, args=(image_queue, CAMERA))
     #camera_disp_proc = Process(target=image_processor_and_display, args=(image_queue,))
-    dist_sensor_prc = Process(target=distance_sensor)
+    #dist_sensor_prc = Process(target=distance_sensor)
     controller_ds4_proc = Process(target=ds4_controller_process)
     
-    dist_sensor_prc.start()
+    #dist_sensor_prc.start()
     controller_ds4_proc.start()
 
     image_get_camera_image(image_queue, CAMERA)
@@ -43,7 +43,7 @@ def main():
     #camera_capture_proc.join()
     #camera_disp_proc.join()
     controller_ds4_proc.join()
-    dist_sensor_prc.join()
+    #dist_sensor_prc.join()
 
     # Stop car from moving
     print "something died"
@@ -105,7 +105,7 @@ def ds4_controller_process():
         if WRITE_ARDUINO:
             if controller.getButtonDown(controller.BTN_SQUARE):
                 reverse = True
-                print "Reverse: On"
+                #print "Reverse: On"
             else:
                 reverse = False
 
@@ -131,7 +131,7 @@ def ds4_controller_process():
                 left_wheels = "0"
                 right_wheels = "0"
 
-            print "Left: %d Right: %d" % (left_wheels, right_wheels)
+            #print "Left: %d Right: %d" % (left_wheels, right_wheels)
             if values_changed is True:
                 prev_left_value = left_wheels
                 prev_right_value = right_wheels
@@ -205,7 +205,7 @@ def distance_sensor():
         distance = pulse_duration * 17150
 
         distance = round(distance, 2)
-        print "Distance: %f cm" % distance
+        #print "Distance: %f cm" % distance
 
         if distance < 20.0:
             set_ardunio_wheel_speeds(0, 0)
