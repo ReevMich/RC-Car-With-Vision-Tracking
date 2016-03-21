@@ -8,14 +8,14 @@ ARDUINO_IS_WRITABLE = True
 ARDUINO = None
 
 def main(ardrino_wheel_speeds_queue):
-    
+
     global ARDUINO
     program_running = True
 
     while program_running:
-        arduino = serial.Serial('/dev/ttyACM0', 9600)
-        print("Serial connected on " + arduino.name)
-        while arduino.writable():
+        ARDUINO = serial.Serial('/dev/ttyACM0', 9600)
+        print("Serial connected on " + ARDUINO.name)
+        while ARDUINO.writable():
 
             #try:
             #    program_running = program_running_queue.get()
