@@ -12,6 +12,8 @@ def main(out_arduino_wheel_speed_queue):
     # lets us know when to exit to program
     square_pressed = False
 
+    reverse = False
+
     # Speed of the wheels
     left_wheels = 0
     right_wheels = 0
@@ -25,19 +27,18 @@ def main(out_arduino_wheel_speed_queue):
 
             try:
                 if reverse is True:
-                    left_value = -controller.getAxisValue(controller.AXIS_R2)
-                    right_value = -controller.getAxisValue(controller.AXIS_L2)
+                    left_wheels = -controller.getAxisValue(controller.AXIS_R2)
+                    right_wheels = -controller.getAxisValue(controller.AXIS_L2)
                 else:
-                    left_value = controller.getAxisValue(controller.AXIS_R2)
-                    right_value = controller.getAxisValue(controller.AXIS_L2)
-
-                values_changed = False
+                    left_wheels = controller.getAxisValue(controller.AXIS_R2)
+                    right_wheels = controller.getAxisValue(controller.AXIS_L2)
 
             except ValueError:
                 left_wheels = "0"
                 right_wheels = "0"
 
             out_arduino_wheel_speed_queue.put((left_wheels, right_wheels))
+            print "Writing %d %d" % (left_wheels, right_wheels)
 
             if controller.getButtonDown(controller.BTN_PS):
                 #out_program_running_queue.put(False)

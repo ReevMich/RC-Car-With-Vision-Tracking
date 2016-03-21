@@ -8,12 +8,6 @@ import DS4_Controller
 import Arduino
 
 
-# Global Variables
-
-
-TRIG = 23
-ECHO = 24
-
 # Main Method
 def main():
 
@@ -26,9 +20,7 @@ def main():
     arduino_proc.start()
 
     while True:
-        pass
-
-    sleep(1)  # Give time for threads to close
+        sleep(1)
 
 if __name__ == '__main__':
     main()

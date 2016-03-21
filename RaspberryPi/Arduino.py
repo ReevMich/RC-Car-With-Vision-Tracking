@@ -30,6 +30,7 @@ def main(ardrino_wheel_speeds_queue):
         try:
             left_wheel, right_wheel = ardrino_wheel_speeds_queue.get()
             set_ardunio_wheel_speeds(left_wheel, right_wheel)
+            print "Reading %d %d " % (left_wheel, right_wheel)
         except ardrino_wheel_speeds_queue.empty():
             pass
 
