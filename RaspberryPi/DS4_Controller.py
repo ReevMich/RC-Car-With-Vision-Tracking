@@ -23,7 +23,7 @@ def main(out_arduino_wheel_speed_queue):
 
             if controller.getButtonDown(controller.BTN_SQUARE):
                 reverse = not reverse
-                print "Reverse: " + reverse
+                print "Reverse: " + str(reverse)
 
             try:
                 if reverse is True:

@@ -4,37 +4,38 @@ import serial
 from multiprocessing import Queue
 from time import sleep
 
-ARDUINO = serial.Serial('/dev/ttyACM0', 9600)  # USB serial connection with baud rate of 9600
 ARDUINO_IS_WRITABLE = True
 
 
 def main(ardrino_wheel_speeds_queue):
 
-    print("Serial connected on " + ARDUINO.name)
-
     program_running = True
 
     while program_running:
-        #try:
-        #    program_running = program_running_queue.get()
-        #except program_running_queue.empty():
-        #    pass
+        arduino = serial.Serial('/dev/ttyACM0', 9600)
+        print("Serial connected on " + arduino.name)
+        while arduino.is_open:
 
-        global ARDUINO_IS_WRITABLE
+            #try:
+            #    program_running = program_running_queue.get()
+            #except program_running_queue.empty():
+            #    pass
 
-        #try:
-        #    ARDUINO_IS_WRITABLE = arduino_can_move_queue.get()
-        #except arduino_can_move_queue.empty():
-        #    pass
+            global ARDUINO_IS_WRITABLE
 
-        try:
-            left_wheel, right_wheel = ardrino_wheel_speeds_queue.get()
-            set_ardunio_wheel_speeds(left_wheel, right_wheel)
-            print "Reading %d %d " % (left_wheel, right_wheel)
-        except ardrino_wheel_speeds_queue.empty():
-            pass
+            #try:
+            #    ARDUINO_IS_WRITABLE = arduino_can_move_queue.get()
+            #except arduino_can_move_queue.empty():
+            #    pass
 
-        sleep(.5)
+            try:
+                left_wheel, right_wheel = ardrino_wheel_speeds_queue.get()
+                set_ardunio_wheel_speeds(left_wheel, right_wheel)
+                print "Reading %d %d " % (left_wheel, right_wheel)
+            except ardrino_wheel_speeds_queue.empty():
+                pass
+
+            sleep(.095)
 
 
 # Takes in a wheel speed and formats it for the arduino
@@ -58,9 +59,9 @@ def format_speeds(input_speeds):
 def set_ardunio_wheel_speeds(left, right):
     if ARDUINO_IS_WRITABLE:
         wheel_speeds = format_speeds(left) + format_speeds(right)
-        ARDUINO.write(wheel_speeds)
+        arduino.write(wheel_speeds)
     else:
-        ARDUINO.write("00000000")
+        arduino.write("00000000")
 
 
 if __name__ == '__main__':
