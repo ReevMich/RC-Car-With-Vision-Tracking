@@ -14,7 +14,7 @@ def main(ardrino_wheel_speeds_queue):
     while program_running:
         arduino = serial.Serial('/dev/ttyACM0', 9600)
         print("Serial connected on " + arduino.name)
-        while arduino.is_open:
+        while arduino.writable():
 
             #try:
             #    program_running = program_running_queue.get()

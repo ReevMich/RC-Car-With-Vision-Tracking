@@ -17,6 +17,8 @@ def main(out_arduino_wheel_speed_queue):
     # Speed of the wheels
     left_wheels = 0
     right_wheels = 0
+    prev_left = 0
+    prev_right = 0
 
     while square_pressed is False:
         while ds4_controller.active:
@@ -37,8 +39,12 @@ def main(out_arduino_wheel_speed_queue):
                 left_wheels = "0"
                 right_wheels = "0"
 
-            out_arduino_wheel_speed_queue.put((left_wheels, right_wheels))
-            print "Writing %d %d" % (left_wheels, right_wheels)
+            if prev_left != left_wheels or prev_right != right_wheels:
+                out_arduino_wheel_speed_queue.put((left_wheels, right_wheels))
+                print "Writing %d %d" % (left_wheels, right_wheels)
+
+            prev_left = left_wheels
+            prev_right = right_wheels
 
             if controller.getButtonDown(controller.BTN_PS):
                 #out_program_running_queue.put(False)
