@@ -5,10 +5,11 @@ from multiprocessing import Queue
 from time import sleep
 
 ARDUINO_IS_WRITABLE = True
-
+ARDUINO = None
 
 def main(ardrino_wheel_speeds_queue):
-
+    
+    global ARDUINO
     program_running = True
 
     while program_running:
@@ -59,9 +60,9 @@ def format_speeds(input_speeds):
 def set_ardunio_wheel_speeds(left, right):
     if ARDUINO_IS_WRITABLE:
         wheel_speeds = format_speeds(left) + format_speeds(right)
-        arduino.write(wheel_speeds)
+        ARDUINO.write(wheel_speeds)
     else:
-        arduino.write("00000000")
+        ARDUINO.write("00000000")
 
 
 if __name__ == '__main__':
