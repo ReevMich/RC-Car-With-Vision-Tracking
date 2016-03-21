@@ -8,24 +8,24 @@ ARDUINO = serial.Serial('/dev/ttyACM0', 9600)  # USB serial connection with baud
 ARDUINO_IS_WRITABLE = True
 
 
-def main(arduino_can_move_queue, ardrino_wheel_speeds_queue, program_running_queue):
+def main(ardrino_wheel_speeds_queue):
 
     print("Serial connected on " + ARDUINO.name)
 
     program_running = True
 
     while program_running:
-        try:
-            program_running = program_running_queue.get()
-        except program_running_queue.empty():
-            pass
+        #try:
+        #    program_running = program_running_queue.get()
+        #except program_running_queue.empty():
+        #    pass
 
         global ARDUINO_IS_WRITABLE
 
-        try:
-            ARDUINO_IS_WRITABLE = arduino_can_move_queue.get()
-        except arduino_can_move_queue.empty():
-            pass
+        #try:
+        #    ARDUINO_IS_WRITABLE = arduino_can_move_queue.get()
+        #except arduino_can_move_queue.empty():
+        #    pass
 
         try:
             left_wheel, right_wheel = ardrino_wheel_speeds_queue.get()
@@ -33,7 +33,7 @@ def main(arduino_can_move_queue, ardrino_wheel_speeds_queue, program_running_que
         except ardrino_wheel_speeds_queue.empty():
             pass
 
-        sleep(.1)
+        sleep(.5)
 
 
 # Takes in a wheel speed and formats it for the arduino
@@ -66,4 +66,4 @@ if __name__ == '__main__':
     test_arduino_can_move_queue = Queue()
     test_arduino_wheels_speeds_queue = Queue()
     test_program_running_in_queue = Queue()
-    main(test_arduino_can_move_queue, test_arduino_wheels_speeds_queue, test_program_running_in_queue)
+    #main(test_arduino_can_move_queue, test_arduino_wheels_speeds_queue, test_program_running_in_queue)
