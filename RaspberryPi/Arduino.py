@@ -13,7 +13,7 @@ def main(ardrino_wheel_speeds_queue):
     program_running = True
 
     while program_running:
-        ARDUINO = serial.Serial('/dev/ttyACM0', 9600)
+        ARDUINO = serial.Serial('/dev/ttyACM0', 9600, write_timeout=.1)
         print("Serial connected on " + ARDUINO.name)
         while ARDUINO.writable():
 
@@ -34,6 +34,7 @@ def main(ardrino_wheel_speeds_queue):
                 set_ardunio_wheel_speeds(left_wheel, right_wheel)
                 ARDUINO.flushOutput()
                 ARDUINO.flush()
+                ARDUINO.
                 print "Reading %d %d " % (left_wheel, right_wheel)
             except ardrino_wheel_speeds_queue.empty():
                 pass
