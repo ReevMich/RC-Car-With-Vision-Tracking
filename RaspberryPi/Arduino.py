@@ -34,7 +34,6 @@ def main(ardrino_wheel_speeds_queue):
                 set_ardunio_wheel_speeds(left_wheel, right_wheel)
                 ARDUINO.flushOutput()
                 ARDUINO.flush()
-                ARDUINO.
                 print "Reading %d %d " % (left_wheel, right_wheel)
             except ardrino_wheel_speeds_queue.empty():
                 pass
