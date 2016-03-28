@@ -16,7 +16,7 @@ def main():
 
     arduino_proc = Process(target=Arduino.main, args=(controller_queue,))
 
-    controller_ds4_proc.start()
+    #controller_ds4_proc.start()
     arduino_proc.start()
 
     while True:

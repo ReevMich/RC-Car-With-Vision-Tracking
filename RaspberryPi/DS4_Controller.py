@@ -15,8 +15,6 @@ def main(out_arduino_wheel_speed_queue):
     reverse = False
 
     # Speed of the wheels
-    left_wheels = 0
-    right_wheels = 0
     prev_left = 0
     prev_right = 0
 
