@@ -21,17 +21,25 @@ def main(arduino_wheel_speeds_queue):
     global RIGHT_FORWARD
     program_running = True
 
-    ARDUINO = pyfirmata.Arduino('/dev/ttyAMA0')
+    ARDUINO = pyfirmata.Arduino('/dev/ttyACM4')
 
-    LEFT_FORWARD = ARDUINO.get_pin('d:5:o')
-    LEFT_BACKWARD = ARDUINO.get_pin('d:6:o')
-    RIGHT_FORWARD = ARDUINO.get_pin('d:9:o')
-    RIGHT_BACKWARD = ARDUINO.get_pin('d:10:o')
+    LEFT_FORWARD = ARDUINO.get_pin('d:5:p')
+    LEFT_BACKWARD = ARDUINO.get_pin('d:6:p')
+    RIGHT_FORWARD = ARDUINO.get_pin('d:11:p')
+    RIGHT_BACKWARD = ARDUINO.get_pin('d:10:p')
 
+    it = pyfirmata.util.Iterator(ARDUINO)
+    it.start()
+    
     print("Serial connected on " + ARDUINO.name)
-    i = 100
+    i = 50.0
     while program_running:
 
+        ARDUINO.analog[0].enable_reporting()
+
+        while ARDUINO.analog[0].read() is None:
+            pass
+        
         # try:
         #    program_running = program_running_queue.get()
         # except program_running_queue.empty():
@@ -45,52 +53,55 @@ def main(arduino_wheel_speeds_queue):
         #    pass
 
         try:
-            left_wheel, right_wheel = arduino_wheel_speeds_queue.get()
-            set_left_wheels(left_wheel)
-            set_right_wheels(right_wheel)
+#            left_wheel, right_wheel = arduino_wheel_speeds_queue.get()
+            set_left_wheels(i)
+            set_right_wheels(i)
 
-            print "Reading %d %d " % (left_wheel, right_wheel)
+            #print "Reading %d %d " % (left_wheel, right_wheel)
         except arduino_wheel_speeds_queue.empty():
             set_left_wheels(i)
             set_right_wheels(i)
-            pass
-        i -= 1
+            print i
+            
+        i -= 1.0
 
-        if i < -100:
-            i = 100
-        sleep(.095)
+        if i < -50.0:
+            i = 50.0
+        sleep(.1)
 
 
 def set_left_wheels(left):
 
-    abs_speed = abs(left)
+    abs_speed = float(abs(left) / 100.0)
 
-    if abs_speed < 10:
-        abs_speed = 10
-    elif abs_speed > 90:
-        abs_speed = 90
+    if abs_speed < .1:
+        abs_speed = .1
+    elif abs_speed > .9:
+        abs_speed = .9
 
     if left >= 0:
         LEFT_FORWARD.write(abs_speed)
-        LEFT_BACKWARD.write(0)
+        LEFT_BACKWARD.write(0.0)
+        print "Forward %f" % abs_speed
     else:
-        LEFT_FORWARD.write(0)
+        print "Backward %f" % abs_speed
+        LEFT_FORWARD.write(0.0)
         LEFT_BACKWARD.write(abs_speed)
 
 
 def set_right_wheels(right):
-    abs_speed = abs(right)
+    abs_speed =float(abs(right) / 100.0)
 
-    if abs_speed < 10:
-        abs_speed = 10
-    elif abs_speed > 90:
-        abs_speed = 90
+    if abs_speed < .1:
+        abs_speed = .1
+    elif abs_speed > .9:
+        abs_speed = .9
 
     if right >= 0:
         RIGHT_FORWARD.write(abs_speed)
-        RIGHT_BACKWARD.write(0)
+        RIGHT_BACKWARD.write(0.0)
     else:
-        RIGHT_FORWARD.write(0)
+        RIGHT_FORWARD.write(0.0)
         RIGHT_BACKWARD.write(abs_speed)
 
 if __name__ == '__main__':
