@@ -19,8 +19,10 @@ def main(out_arduino_wheel_speed_queue, out_run_prog_queue):
     while ds4_controller.active and square_pressed is False:
 
         if controller.getButtonDown(controller.BTN_SQUARE):
-            reverse = not reverse
-            print "Reverse: " + str(reverse)
+            reverse = True
+            print "Reverse: True"
+        else:
+            reverse = False
 
         try:
             if controller.getAxisDown(controller.AXIS_R2):

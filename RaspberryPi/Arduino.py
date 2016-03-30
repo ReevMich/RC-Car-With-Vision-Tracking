@@ -38,9 +38,6 @@ def main(arduino_wheel_speeds_queue, run_prog):
     while program_running:
 
         ARDUINO.analog[0].enable_reporting()
-
-        while ARDUINO.analog[0].read() is None:
-            pass
         
         try:
             left_wheel, right_wheel = arduino_wheel_speeds_queue.get()
@@ -50,11 +47,7 @@ def main(arduino_wheel_speeds_queue, run_prog):
         except arduino_wheel_speeds_queue.empty():
             pass
 
-        try:
-            program_running = run_prog.get()
-        except run_prog.empty():
-            pass
-
+        
         sleep(.1)
 
 
