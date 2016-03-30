@@ -27,6 +27,7 @@ def main():
     while run_prog:
         try:
             run_prog = run_prog_queue.get()
+            print "Program Should terminate:" + run_prog
         except run_prog_queue.empty():
             pass
 

@@ -11,7 +11,6 @@ def main(out_arduino_wheel_speed_queue, out_run_prog_queue):
 
     # lets us know when to exit to program
     square_pressed = False
-
     reverse = False
 
     # Speed of the wheels
@@ -25,15 +24,13 @@ def main(out_arduino_wheel_speed_queue, out_run_prog_queue):
                 print "Reverse: " + str(reverse)
 
             try:
-
-                print
-                if (controller.getAxisDown(controller.AXIS_R2)):
+                if controller.getAxisDown(controller.AXIS_R2):
                     right_wheels = float(
                         controller.getAxisValue(controller.AXIS_R2))
                     print right_wheels
                 else:
                     right_wheels = 0.0
-                if (controller.getAxisDown(controller.AXIS_L2)):
+                if controller.getAxisDown(controller.AXIS_L2):
                     left_wheels = float(
                         controller.getAxisValue(controller.AXIS_L2))
                     print left_wheels
@@ -52,19 +49,13 @@ def main(out_arduino_wheel_speed_queue, out_run_prog_queue):
                 out_arduino_wheel_speed_queue.put((float(left_wheels),
                                                    float(right_wheels)))
 
-            print "Writing %.2f %.2f" % (float(left_wheels),
-                                         float(right_wheels))
-
             prev_left = float(left_wheels)
             prev_right = float(right_wheels)
 
-            if controller.getButtonDown(controller.BTN_PS):
-                # out_program_running_queue.put(False)
-                controller.shutDown(ds4_controller)
-
-            if controller.getButtonDown(controller.BTN_SQUARE):
+            if controller.getButtonDown(controller.BTN_CIRCLE):
                 square_pressed = True
                 out_run_prog_queue.put(False)
+                controller.shutDown(ds4_controller)
 
             sleep(.1)
 
