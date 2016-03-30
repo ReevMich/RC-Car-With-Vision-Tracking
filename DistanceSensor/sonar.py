@@ -34,6 +34,10 @@ while True:
     distance = pulse_duration * 17150
 
     distance = round(distance, 2)
-    print "Distance:",distance,"cm"
+
+    if distance < 15:
+        print "Stop!!!!"
+    else:
+        print "Distance:",distance,"cm"
     
 GPIO.cleanup()
