@@ -55,9 +55,10 @@ def main(arduino_wheel_speeds_queue):
         try:
             left_wheel, right_wheel = arduino_wheel_speeds_queue.get()
             print "Reading %.2f %.2f " % (left_wheel, right_wheel)
-        except arduino_wheel_speeds_queue.empty():
             set_left_wheels(left_wheel)
-            set_right_wheels(right_Wheel)
+            set_right_wheels(right_wheel)
+        except arduino_wheel_speeds_queue.empty():
+            pass
 
         sleep(.1)
 
@@ -66,7 +67,7 @@ def set_left_wheels(left):
     
     abs_speed = left
 
-    if abs_speed < .1:
+    if abs_speed < .1 and abs_speed != 0:
         abs_speed = .1
     elif abs_speed > .9:
         abs_speed = .9
@@ -84,7 +85,7 @@ def set_left_wheels(left):
 def set_right_wheels(right):
     abs_speed = right
 
-    if abs_speed < .1:
+    if abs_speed < .1 and abs_speed != 0:
         abs_speed = .1
     elif abs_speed > .9:
         abs_speed = .9

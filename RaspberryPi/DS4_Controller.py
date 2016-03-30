@@ -5,7 +5,7 @@ from time import sleep
 from multiprocessing import Queue
 
 
-def main(out_arduino_wheel_speed_queue):
+def main(out_arduino_wheel_speed_queue, out_run_prog_queue):
     # init ds4 controller
     ds4_controller = controller.newController()
 
@@ -64,6 +64,7 @@ def main(out_arduino_wheel_speed_queue):
 
             if controller.getButtonDown(controller.BTN_SQUARE):
                 square_pressed = True
+                out_run_prog_queue.put(False)
 
             sleep(.1)
 
