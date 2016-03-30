@@ -27,11 +27,14 @@ def main():
     while run_prog:
         try:
             run_prog = run_prog_queue.get()
-            print "Program Should terminate:" + run_prog
+            print "Program Should terminate:" + str(run_prog)
         except run_prog_queue.empty():
             pass
 
         sleep(1)
+
+    controller_ds4_proc.join()
+    arduino_proc.join()
 
 if __name__ == '__main__':
     main()
