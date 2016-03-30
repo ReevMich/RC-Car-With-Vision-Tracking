@@ -19,6 +19,7 @@ def main(arduino_wheel_speeds_queue, run_prog):
     global LEFT_FORWARD
     global RIGHT_BACKWARD
     global RIGHT_FORWARD
+    global ARDUINO_IS_WRITABLE
     program_running = True
 
     ARDUINO = pyfirmata.Arduino('/dev/ttyACM0')
@@ -33,6 +34,7 @@ def main(arduino_wheel_speeds_queue, run_prog):
     
     print("Serial connected on " + ARDUINO.name)
     ARDUINO_IS_WRITABLE = True
+
     while program_running:
 
         ARDUINO.analog[0].enable_reporting()
@@ -40,18 +42,6 @@ def main(arduino_wheel_speeds_queue, run_prog):
         while ARDUINO.analog[0].read() is None:
             pass
         
-        # try:
-        #    program_running = program_running_queue.get()
-        # except program_running_queue.empty():
-        #    pass
-
-        global ARDUINO_IS_WRITABLE
-
-        # try:
-        #    ARDUINO_IS_WRITABLE = arduino_can_move_queue.get()
-        # except arduino_can_move_queue.empty():
-        #    pass
-
         try:
             left_wheel, right_wheel = arduino_wheel_speeds_queue.get()
             print "Reading %.2f %.2f " % (left_wheel, right_wheel)
