@@ -6,7 +6,7 @@ static int js_fd;
 static js_state state;
 
 // static functions must be defined in the file their used in.
-static int GetRawAxis(int inputValue);
+static float GetRawAxis(int inputValue);
 static void ReadEvent(struct js_event *jse);
 static void deleteController(Controller controller);
 
@@ -118,7 +118,7 @@ bool getAxisDown (int axis){
   if((axis == AXIS_LEFT_STICK_X || axis == AXIS_LEFT_STICK_Y) ||
      (axis == AXIS_RIGHT_STICK_X || axis == AXIS_RIGHT_STICK_Y)){
 
-    if((state.axis[axis] >= 0 || state.axis[axis] <= 100) && state.axis[axis] != 50){
+    if((state.axis[axis] >= 0 || state.axis[axis] <= 1) && state.axis[axis] != .5){
       return true;
     }
     
@@ -129,19 +129,19 @@ bool getAxisDown (int axis){
   return false;
 }
 
-int getAxisValue(int axis){
+float getAxisValue(int axis){
 
   if(getAxisDown(axis)) {
+    printf("Debug: Axis Value --- %f", state.axis[axis]);
     return state.axis[axis];
   }
   
   return 0;
 }
 
-static int GetRawAxis(int inputValue)
+static float GetRawAxis(int inputValue)
 {
-  int value = ((inputValue - MIN_AXIS_VALUE) * (MAX_RAW_AXIS_VALUE - MIN_RAW_AXIS_VALUE) / (MAX_AXIS_VALUE - MIN_AXIS_VALUE) + 0);
-
+  float value = ((inputValue - MIN_AXIS_VALUE) * (MAX_RAW_AXIS_VALUE - MIN_RAW_AXIS_VALUE) / (MAX_AXIS_VALUE - MIN_AXIS_VALUE) + 0)/100;
   return value;
 }
 

@@ -4,7 +4,7 @@ import pyfirmata
 from multiprocessing import Queue
 from time import sleep
 
-ARDUINO_IS_WRITABLE = True
+ARDUINO_IS_WRITABLE = False
 ARDUINO = None
 
 LEFT_FORWARD = None
@@ -21,7 +21,7 @@ def main(arduino_wheel_speeds_queue):
     global RIGHT_FORWARD
     program_running = True
 
-    ARDUINO = pyfirmata.Arduino('/dev/ttyACM4')
+    ARDUINO = pyfirmata.Arduino('/dev/ttyACM0')
 
     LEFT_FORWARD = ARDUINO.get_pin('d:5:p')
     LEFT_BACKWARD = ARDUINO.get_pin('d:6:p')
@@ -32,7 +32,7 @@ def main(arduino_wheel_speeds_queue):
     it.start()
     
     print("Serial connected on " + ARDUINO.name)
-    i = 50.0
+    ARDUINO_IS_WRITABLE = True
     while program_running:
 
         ARDUINO.analog[0].enable_reporting()
@@ -53,26 +53,18 @@ def main(arduino_wheel_speeds_queue):
         #    pass
 
         try:
-#            left_wheel, right_wheel = arduino_wheel_speeds_queue.get()
-            set_left_wheels(i)
-            set_right_wheels(i)
-
-            #print "Reading %d %d " % (left_wheel, right_wheel)
+            left_wheel, right_wheel = arduino_wheel_speeds_queue.get()
+            print "Reading %.2f %.2f " % (left_wheel, right_wheel)
         except arduino_wheel_speeds_queue.empty():
-            set_left_wheels(i)
-            set_right_wheels(i)
-            print i
-            
-        i -= 1.0
+            set_left_wheels(left_wheel)
+            set_right_wheels(right_Wheel)
 
-        if i < -50.0:
-            i = 50.0
         sleep(.1)
 
 
 def set_left_wheels(left):
-
-    abs_speed = float(abs(left) / 100.0)
+    
+    abs_speed = left
 
     if abs_speed < .1:
         abs_speed = .1
@@ -90,7 +82,7 @@ def set_left_wheels(left):
 
 
 def set_right_wheels(right):
-    abs_speed =float(abs(right) / 100.0)
+    abs_speed = right
 
     if abs_speed < .1:
         abs_speed = .1

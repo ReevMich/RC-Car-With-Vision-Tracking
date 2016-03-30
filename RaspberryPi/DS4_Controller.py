@@ -15,9 +15,10 @@ def main(out_arduino_wheel_speed_queue):
     reverse = False
 
     # Speed of the wheels
-    prev_left = 0
-    prev_right = 0
-
+    prev_left = 0.0
+    prev_right = 0.0
+    left_wheels = 0.0
+    right_wheels = 0.0
     while square_pressed is False:
         while ds4_controller.active:
 
@@ -26,23 +27,36 @@ def main(out_arduino_wheel_speed_queue):
                 print "Reverse: " + str(reverse)
 
             try:
-                if reverse is True:
-                    left_wheels = -controller.getAxisValue(controller.AXIS_R2)
-                    right_wheels = -controller.getAxisValue(controller.AXIS_L2)
-                else:
-                    left_wheels = controller.getAxisValue(controller.AXIS_R2)
-                    right_wheels = controller.getAxisValue(controller.AXIS_L2)
 
+                print 
+                if (controller.getAxisDown(controller.AXIS_R2)):
+                    right_wheels = float(controller.getAxisValue(controller.AXIS_R2))
+                    print right_wheels
+                else:
+                    right_wheels = 0.0
+                if (controller.getAxisDown(controller.AXIS_L2)):
+                    left_wheels = float(controller.getAxisValue(controller.AXIS_L2))
+                    print left_wheels
+                else:
+                    left_wheels = 0.0
+                    
+                if reverse is True:
+                    left_wheels = float(-left_Wheels)
+                    right_wheels = float(-right_wheels)
+                
+                
             except ValueError:
                 left_wheels = "0"
                 right_wheels = "0"
 
-            if prev_left != left_wheels or prev_right != right_wheels:
-                out_arduino_wheel_speed_queue.put((left_wheels, right_wheels))
-                print "Writing %d %d" % (left_wheels, right_wheels)
 
-            prev_left = left_wheels
-            prev_right = right_wheels
+            out_arduino_wheel_speed_queue.put((float(left_wheels), float(right_wheels)))
+            print "Writing %.2f %.2f" % (float(left_wheels), float(right_wheels))
+
+            prev_left = float(left_wheels)
+            prev_right = float(right_wheels)
+
+            print prev_left
 
             if controller.getButtonDown(controller.BTN_PS):
                 #out_program_running_queue.put(False)
