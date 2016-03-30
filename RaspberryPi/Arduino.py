@@ -13,7 +13,7 @@ RIGHT_FORWARD = None
 RIGHT_BACKWARD = None
 
 
-def main(arduino_wheel_speeds_queue):
+def main(arduino_wheel_speeds_queue, run_prog):
     global ARDUINO
     global LEFT_BACKWARD
     global LEFT_FORWARD
@@ -58,6 +58,11 @@ def main(arduino_wheel_speeds_queue):
             set_left_wheels(left_wheel)
             set_right_wheels(right_wheel)
         except arduino_wheel_speeds_queue.empty():
+            pass
+
+        try:
+            program_running = run_prog.get()
+        except run_prog.empty():
             pass
 
         sleep(.1)
