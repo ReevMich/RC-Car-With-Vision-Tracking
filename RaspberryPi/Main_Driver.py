@@ -3,7 +3,7 @@
 # Imports
 
 from time import sleep
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Pipe
 import DS4_Controller
 import Arduino
 import Distance_Sensor
@@ -14,17 +14,17 @@ def main():
 
     run_prog = True
 
-    run_prog_queue_cntrlr = Queue()
-    controller_queue = Queue()
-    dist_queue = Queue()
+    run_prog_pipe_cntrlr = Pipe()
+    controller_pipe = Pipe()
+    dist_pipe = Pipe()
 
     controller_ds4_proc = Process(target=DS4_Controller.main,
-                                  args=(controller_queue, run_prog_queue_cntrlr))
+                                  args=(controller_pipe, run_prog_pipe_cntrlr))
 
-    arduino_proc = Process(target=Arduino.main, args=(controller_queue,
-                                                      dist_queue))
+    arduino_proc = Process(target=Arduino.main, args=(controller_pipe,
+                                                      dist_pipe))
 
-    distance_proc = Process(target=Distance_Sensor.main, args=(dist_queue,))
+    distance_proc = Process(target=Distance_Sensor.main, args=(dist_pipe,))
 
     controller_ds4_proc.start()
     arduino_proc.start()
@@ -32,14 +32,13 @@ def main():
 
     while run_prog:
         try:
-            run_prog = run_prog_queue_cntrlr.get()
+            run_prog = run_prog_pipe_cntrlr.get()
             print "Program Should terminate:" + str(run_prog)
-        except run_prog_queue_cntrlr.empty():
+        except run_prog_pipe_cntrlr.empty():
             pass
 
         sleep(1)
 
-    controller_queue.put(0.0, 0.0)
     controller_ds4_proc.terminate()
     distance_proc.terminate()
     sleep(1)

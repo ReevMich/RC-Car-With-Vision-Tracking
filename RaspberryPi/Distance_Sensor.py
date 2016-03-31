@@ -1,6 +1,5 @@
 import RPi.GPIO as GPIO
 import time
-from multiprocessing import Queue
 
 GPIO.setmode(GPIO.BCM)
 
@@ -8,10 +7,12 @@ TRIG = 23
 ECHO = 24
 
 
-def main(dist_queue):
+def main(dist_pipe):
 
     print "Distance Measurement In Progress"
-    
+
+    out_sensor, _ = dist_pipe
+
     GPIO.setup(TRIG, GPIO.OUT)
     GPIO.setup(ECHO, GPIO.IN)
 
@@ -43,7 +44,7 @@ def main(dist_queue):
 
         if distance < 15 and prev_value is False:
             prev_value = True
-            dist_queue.put(True)
+            out_sensor.send(True)
             print "Stop!!!!"
         elif prev_value is True:
             prev_value = False

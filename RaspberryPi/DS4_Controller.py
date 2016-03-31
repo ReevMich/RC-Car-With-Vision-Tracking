@@ -2,10 +2,13 @@
 
 from DS4Controller.src import controller
 from time import sleep
-from multiprocessing import Queue
 
 
-def main(out_arduino_wheel_speed_queue, out_run_prog_queue):
+def main(out_arduino_wheel_speed_pipe, out_run_prog_pipe):
+
+    out_wheels_pipe, _ = out_arduino_wheel_speed_pipe
+    out_run_prog_pipe, _ = out_run_prog_pipe
+
     # init ds4 controller
     ds4_controller = controller.newController()
 
@@ -47,20 +50,14 @@ def main(out_arduino_wheel_speed_queue, out_run_prog_queue):
             right_wheels = "0"
 
         if right_wheels != prev_right or left_wheels != prev_left:
-            out_arduino_wheel_speed_queue.put((float(left_wheels),
-                                               float(right_wheels)))
+            out_wheels_pipe.send((float(left_wheels), float(right_wheels)))
 
         prev_left = float(left_wheels)
         prev_right = float(right_wheels)
 
         if controller.getButtonDown(controller.BTN_CIRCLE):
             square_pressed = True
-            out_run_prog_queue.put(False)
+            out_run_prog_pipe.send(False)
 
         sleep(.1)
 
-
-if __name__ == '__main__':
-    test_arduino_queue = Queue()
-    test_running_program_queue = Queue()
-    main(test_arduino_queue, test_running_program_queue)
