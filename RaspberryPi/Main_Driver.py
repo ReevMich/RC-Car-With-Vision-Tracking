@@ -30,12 +30,11 @@ def main():
     arduino_proc.start()
     distance_proc.start()
 
+    _, in_term_prog = run_prog_pipe_cntrlr
+
     while run_prog:
-        try:
-            run_prog = run_prog_pipe_cntrlr.get()
-            print "Program Should terminate:" + str(run_prog)
-        except run_prog_pipe_cntrlr.empty():
-            pass
+        run_prog = in_term_prog.recv()
+        print "Program Should terminate:" + str(not run_prog)
 
         sleep(1)
 
