@@ -13,6 +13,7 @@ RIGHT_BACKWARD = None
 
 DISTANCE_SENSOR_TRIGGERED = False
 
+
 def main(arduino_wheel_speeds_queue, dist_sensor_queue):
     global ARDUINO
     global LEFT_BACKWARD
@@ -41,6 +42,7 @@ def main(arduino_wheel_speeds_queue, dist_sensor_queue):
 
         try:
             DISTANCE_SENSOR_TRIGGERED = dist_sensor_queue.get()
+            print DISTANCE_SENSOR_TRIGGERED
         except dist_sensor_queue.empty():
             pass
 
