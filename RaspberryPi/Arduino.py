@@ -19,7 +19,7 @@ def main(arduino_wheel_speeds_queue, dist_sensor_queue):
     global LEFT_FORWARD
     global RIGHT_BACKWARD
     global RIGHT_FORWARD
-    global  DISTANCE_SENSOR_TRIGGERED
+    global DISTANCE_SENSOR_TRIGGERED
 
     program_running = True
 
@@ -54,10 +54,11 @@ def main(arduino_wheel_speeds_queue, dist_sensor_queue):
             else:
                 set_left_wheels(-0.3)
                 set_right_wheels(-0.3)
-
         except arduino_wheel_speeds_queue.empty():
-            pass
-        
+            if DISTANCE_SENSOR_TRIGGERED is True:
+                set_left_wheels(-0.3)
+                set_right_wheels(-0.3)
+
         sleep(.1)
 
 

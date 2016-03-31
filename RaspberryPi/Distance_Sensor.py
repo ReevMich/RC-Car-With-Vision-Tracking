@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 import time
-from MultiProcessing import Queue
+from multiprocessing import Queue
 
 GPIO.setmode(GPIO.BCM)
 
@@ -35,19 +35,19 @@ def main(dist_queue):
         while GPIO.input(ECHO) == 1:
             pulse_end = time.time()
                 
-            pulse_duration = pulse_end - pulse_start
+        pulse_duration = pulse_end - pulse_start
                 
-            distance = pulse_duration * 17150
+        distance = pulse_duration * 17150
                 
-            distance = round(distance, 2)
+        distance = round(distance, 2)
 
-            if distance < 15 and prev_value is False:
-                prev_value = True
-                dist_queue.put(True)
-                print "Stop!!!!"
-            elif prev_value is True:
-                prev_value = False
+        if distance < 15 and prev_value is False:
+            prev_value = True
+            dist_queue.put(True)
+            print "Stop!!!!"
+        elif prev_value is True:
+            prev_value = False
 
-            print "Distance:", distance, "cm"
+        print "Distance:", distance, "cm"
     
     GPIO.cleanup()

@@ -24,7 +24,7 @@ def main():
     arduino_proc = Process(target=Arduino.main, args=(controller_queue,
                                                       dist_queue))
 
-    distance_proc = Process(target=Distance_Sensor.main, args=dist_queue,)
+    distance_proc = Process(target=Distance_Sensor.main, args=(dist_queue,))
 
     controller_ds4_proc.start()
     arduino_proc.start()
