@@ -132,7 +132,7 @@ bool getAxisDown (int axis){
 float getAxisValue(int axis){
 
   if(getAxisDown(axis)) {
-    printf("Debug: Axis Value --- %f", state.axis[axis]);
+    // printf("Debug: Axis Value --- %f", state.axis[axis]); // Debug Code
     return state.axis[axis];
   }
   
