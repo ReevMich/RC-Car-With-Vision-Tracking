@@ -41,22 +41,23 @@ def main(arduino_wheel_speeds_pipe, dist_sensor_pipe):
     while program_running:
 
         ARDUINO.analog[0].enable_reporting()
+	
+	if in_dist_sensor_pipe.poll():
+        	DISTANCE_SENSOR_TRIGGERED = in_dist_sensor_pipe.recv()
+        	print DISTANCE_SENSOR_TRIGGERED
 
-        DISTANCE_SENSOR_TRIGGERED = in_dist_sensor_pipe.recv()
-        print DISTANCE_SENSOR_TRIGGERED
-
-        left_wheel, right_wheel = in_wheel_speed_pipe.recv()
-        print "Reading %.2f %.2f " % (left_wheel, right_wheel)
-
-        if DISTANCE_SENSOR_TRIGGERED is False:
-            set_left_wheels(left_wheel)
-            set_right_wheels(right_wheel)
-        else:
-            set_left_wheels(-0.3)
-            set_right_wheels(-0.3)
+	if in_wheel_speed_pipe.poll():
+            left_wheel, right_wheel = in_wheel_speed_pipe.recv()
+            print "Reading %.2f %.2f " % (left_wheel, right_wheel)
+            if DISTANCE_SENSOR_TRIGGERED is False:
+                set_left_wheels(left_wheel)
+                set_right_wheels(right_wheel)
+            else:
+                set_left_wheels(-0.3)
+                set_right_wheels(-0.3)
 
     sleep(.1)
-
+    print("llop")
 
 def set_left_wheels(left):
     abs_speed = left
