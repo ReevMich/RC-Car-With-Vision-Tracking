@@ -46,8 +46,9 @@ def main(dist_pipe):
             prev_value = True
             out_sensor.send(True)
             print "Stop!!!!"
-        elif prev_value is True:
+        elif prev_value is True and distance >= 15:
             prev_value = False
+            out_sensor.send(False)
 
         print "Distance:", distance, "cm"
     
