@@ -8,7 +8,7 @@
   void shutDown(Controller);
   bool getButtonDown(int);
   bool getAxisDown(int);
-  int getAxisValue(int);
+  float getAxisValue(float);
   char* getControllerName(Controller);
   void deviceInfo(Controller);
   Controller newController(void);
@@ -59,7 +59,7 @@ void* Loop(void*);
 void shutDown(Controller);
 bool getButtonDown(int);
 bool getAxisDown(int);
-int getAxisValue(int);
+float getAxisValue(float);
 char* getControllerName(Controller);
 void deviceInfo(Controller);
 Controller newController(void);

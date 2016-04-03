@@ -28,15 +28,17 @@ def main(arduino_wheel_speeds_pipe, dist_sensor_pipe):
 
     ARDUINO = pyfirmata.Arduino('/dev/ttyACM0')
 
-    LEFT_FORWARD = ARDUINO.get_pin('d:5:p')
-    LEFT_BACKWARD = ARDUINO.get_pin('d:6:p')
-    RIGHT_FORWARD = ARDUINO.get_pin('d:11:p')
+    LEFT_FORWARD = ARDUINO.get_pin('d:6:p')
+    LEFT_BACKWARD = ARDUINO.get_pin('d:5:p')
+    RIGHT_FORWARD = ARDUINO.get_pin('d:9:p')
     RIGHT_BACKWARD = ARDUINO.get_pin('d:10:p')
 
     it = pyfirmata.util.Iterator(ARDUINO)
     it.start()
 
     print("Serial connected on " + ARDUINO.name)
+
+    left_wheel, right_wheel = (0,0)
 
     while program_running:
 
@@ -47,17 +49,19 @@ def main(arduino_wheel_speeds_pipe, dist_sensor_pipe):
         	print DISTANCE_SENSOR_TRIGGERED
 
 	if in_wheel_speed_pipe.poll():
+	    prev_left, prev_right = left_wheel, right_wheel
             left_wheel, right_wheel = in_wheel_speed_pipe.recv()
-            print "Reading %.2f %.2f " % (left_wheel, right_wheel)
-            if DISTANCE_SENSOR_TRIGGERED is False:
-                set_left_wheels(left_wheel)
-                set_right_wheels(right_wheel)
-            else:
-                set_left_wheels(-0.3)
-                set_right_wheels(-0.3)
+            if prev_left != left_wheel or prev_right != right_wheel:
+                print "Reading %.2f %.2f " % (left_wheel, right_wheel)
+                if DISTANCE_SENSOR_TRIGGERED is False:
+                    set_left_wheels(left_wheel)
+                    set_right_wheels(right_wheel)
+                else:
+                    set_left_wheels(-0.3)
+                    set_right_wheels(-0.3)
 
-    sleep(.1)
-    print("llop")
+            print "Arduino Left: %d Right: %d" % (left_wheel, right_wheel)
+    	sleep(.05)
 
 def set_left_wheels(left):
     abs_speed = left

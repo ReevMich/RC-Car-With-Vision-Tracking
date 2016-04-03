@@ -6,7 +6,7 @@ static int js_fd;
 static js_state state;
 
 // static functions must be defined in the file their used in.
-static float GetRawAxis(int inputValue);
+static float GetRawAxis(float inputValue);
 static void ReadEvent(struct js_event *jse);
 static void deleteController(Controller controller);
 
@@ -139,10 +139,10 @@ float getAxisValue(int axis){
   return 0;
 }
 
-static float GetRawAxis(int inputValue)
+static float GetRawAxis(float inputValue)
 {
-  float value = ((inputValue - MIN_AXIS_VALUE) * (MAX_RAW_AXIS_VALUE - MIN_RAW_AXIS_VALUE) / (MAX_AXIS_VALUE - MIN_AXIS_VALUE) + 0)/100;
-  return value;
+  float value = ((inputValue - MIN_AXIS_VALUE) * (MAX_RAW_AXIS_VALUE - MIN_RAW_AXIS_VALUE) / (MAX_AXIS_VALUE - MIN_AXIS_VALUE) + 0);
+  return value/100.0;
 }
 
 char* getControllerName(Controller controller){

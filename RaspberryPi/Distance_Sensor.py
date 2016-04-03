@@ -25,7 +25,7 @@ def main(dist_pipe):
 
     while True:
         time.sleep(.25)
-        
+      
         GPIO.output(TRIG, True)
         time.sleep(0.00001)
         GPIO.output(TRIG, False)
@@ -46,8 +46,8 @@ def main(dist_pipe):
             prev_value = True
             out_sensor.send(True)
             print "Stop!!!!"
-        elif prev_value is True:
-            prev_value = False
+        elif prev_value is True and distance >= 15:
+           prev_value = False
 
         print "Distance:", distance, "cm"
     
