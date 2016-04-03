@@ -12,8 +12,4 @@ Contains a list of each part of the hardware used for the project. Description (
 *BreadBoard (To connect led and distance sensors) $7.00
 *Distance sensor (To prevent car from crashing into wall) $9.00
 *Camera (To track the color) $34.00
-*
-
-
-
 
