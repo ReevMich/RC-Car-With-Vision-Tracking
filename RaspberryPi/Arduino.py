@@ -32,27 +32,27 @@ def main(arduino_wheel_speeds_pipe, dist_sensor_pipe):
     wiringpi.softPwmCreate(RIGHT_FORWARD, 0, 100)
     wiringpi.softPwmCreate(RIGHT_BACKWARD, 0, 100)
 
-    left_wheel, right_wheel = (0, 0)
+    left_wheel, right_wheel, prev_left, prev_right = (0, 0, 0, 0)
 
     while program_running:
 
         if in_dist_sensor_pipe.poll():
             DISTANCE_SENSOR_TRIGGERED = in_dist_sensor_pipe.recv()
-            print DISTANCE_SENSOR_TRIGGERED
+        print DISTANCE_SENSOR_TRIGGERED
 
         if in_wheel_speed_pipe.poll():
             prev_left, prev_right = left_wheel, right_wheel
             left_wheel, right_wheel = in_wheel_speed_pipe.recv()
-        #   if prev_left != left_wheel or prev_right != right_wheel:
-            if DISTANCE_SENSOR_TRIGGERED is False:
+        if DISTANCE_SENSOR_TRIGGERED is False:
+            if prev_left != left_wheel or prev_right != right_wheel:
                 print "Arduino Left: %.2f Right: %.2f" % \
                       (left_wheel, right_wheel)
                 set_left_wheels(left_wheel)
                 set_right_wheels(right_wheel)
-            else:
-                print "Arduino Left: %.2f Right: %.2f" % (-0.3, -0.3)
-                set_left_wheels(-30)
-                set_right_wheels(-30)
+        else:
+            print "Triggered Arduino Left: %.2f Right: %.2f" % (-0.3, -0.3)
+            set_left_wheels(-30)
+            set_right_wheels(-30)
 
         sleep(.05)
 
