@@ -51,7 +51,7 @@ def main(out_arduino_wheel_speed_pipe, out_run_prog_pipe):
             right_wheels = 0.0
 
         if right_wheels != prev_right or left_wheels != prev_left:
-            out_wheels_pipe.send((left_wheels, right_wheels))
+            out_wheels_pipe.send((left_wheels * 100, right_wheels * 100))
 
         prev_left = left_wheels
         prev_right = right_wheels

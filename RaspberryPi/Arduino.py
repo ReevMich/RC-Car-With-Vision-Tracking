@@ -76,10 +76,10 @@ def set_left_wheels(left):
 def set_right_wheels(right):
     abs_speed = right
 
-    if abs_speed < .1 and abs_speed != 0:
-        abs_speed = .1
-    elif abs_speed > .9:
-        abs_speed = .9
+    if abs_speed < 10 and abs_speed != 0:
+        abs_speed = 10
+    elif abs_speed > 90:
+        abs_speed = 90
 
     if right >= 0:
         wiringpi.softPwmWrite(RIGHT_FORWARD, abs_speed)
