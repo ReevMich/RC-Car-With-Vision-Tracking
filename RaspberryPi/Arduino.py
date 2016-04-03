@@ -58,8 +58,8 @@ def main(arduino_wheel_speeds_pipe, dist_sensor_pipe):
 
 
 def set_left_wheels(left):
-    abs_speed = int(left)
-    print "set left"
+    abs_speed = abs(int(left))
+   
     if abs_speed < 10 and abs_speed != 0:
         abs_speed = 10
     elif abs_speed > 90:
@@ -69,12 +69,13 @@ def set_left_wheels(left):
         wiringpi.softPwmWrite(LEFT_FORWARD, abs_speed)
         wiringpi.softPwmWrite(LEFT_BACKWARD, 0)
     else:
+        print "BackWard %d" % abs_speed
         wiringpi.softPwmWrite(LEFT_FORWARD, 0)
         wiringpi.softPwmWrite(LEFT_BACKWARD, abs_speed)
 
 
 def set_right_wheels(right):
-    abs_speed = int(right)
+    abs_speed = abs(int(right))
 
     if abs_speed < 10 and abs_speed != 0:
         abs_speed = 10

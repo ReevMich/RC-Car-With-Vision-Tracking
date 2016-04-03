@@ -26,6 +26,7 @@ def main(out_arduino_wheel_speed_pipe, out_run_prog_pipe):
 
         reverse_countdown -= 1
         if controller.getButtonDown(controller.BTN_SQUARE):
+            print str(reverse)
             reverse = not reverse
             reverse_countdown = 5
 
