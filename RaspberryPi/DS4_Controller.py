@@ -19,13 +19,16 @@ def main(out_arduino_wheel_speed_pipe, out_run_prog_pipe):
     # Speed of the wheels
     prev_left = 0.0
     prev_right = 0.0
+
+    reverse_countdown = 0
+
     while ds4_controller.active and square_pressed is False:
 
-        if controller.getButtonDown(controller.BTN_SQUARE):
-            reverse = True
-            print "Reverse: True"
-        else:
-            reverse = False
+        reverse_countdown -= 1
+        if controller.getButtonDown(controller.BTN_SQUARE) \
+                and reverse_countdown >= 0:
+            reverse = not reverse
+            reverse_countdown = 5
 
         try:
             if controller.getAxisDown(controller.AXIS_R2):
@@ -44,21 +47,17 @@ def main(out_arduino_wheel_speed_pipe, out_run_prog_pipe):
                 right_wheels = -right_wheels
 
         except ValueError:
-            pass
-            #left_wheels ="0.0"
-            #right_wheels = "0.0"
+            left_wheels = 0.0
+            right_wheels = 0.0
 
-	
-	
-        #if right_wheels != prev_right or left_wheels != prev_left:
-        out_wheels_pipe.send((left_wheels, right_wheels))
+        if right_wheels != prev_right or left_wheels != prev_left:
+            out_wheels_pipe.send((left_wheels, right_wheels))
 
-        #prev_left = left_wheels
-        #prev_right = right_wheels
+        prev_left = left_wheels
+        prev_right = right_wheels
 
         if controller.getButtonDown(controller.BTN_CIRCLE):
             square_pressed = True
             out_run_prog_pipe.send(False)
 
         sleep(.1)
-

@@ -26,7 +26,6 @@ def main():
 
     distance_proc = Process(target=Distance_Sensor.main, args=(dist_pipe,))
 
-
     arduino_proc.start()
     sleep(7)
 

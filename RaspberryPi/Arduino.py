@@ -33,35 +33,31 @@ def main(arduino_wheel_speeds_pipe, dist_sensor_pipe):
     RIGHT_FORWARD = ARDUINO.get_pin('d:9:p')
     RIGHT_BACKWARD = ARDUINO.get_pin('d:10:p')
 
-    it = pyfirmata.util.Iterator(ARDUINO)
-    it.start()
-
     print("Serial connected on " + ARDUINO.name)
 
-    left_wheel, right_wheel = (0,0)
+    left_wheel, right_wheel = (0, 0)
 
     while program_running:
+        if in_dist_sensor_pipe.poll():
+            DISTANCE_SENSOR_TRIGGERED = in_dist_sensor_pipe.recv()
+            print DISTANCE_SENSOR_TRIGGERED
 
-        ARDUINO.analog[0].enable_reporting()
-	
-	if in_dist_sensor_pipe.poll():
-        	DISTANCE_SENSOR_TRIGGERED = in_dist_sensor_pipe.recv()
-        	print DISTANCE_SENSOR_TRIGGERED
-
-	if in_wheel_speed_pipe.poll():
-	    prev_left, prev_right = left_wheel, right_wheel
+        if in_wheel_speed_pipe.poll():
+            prev_left, prev_right = left_wheel, right_wheel
             left_wheel, right_wheel = in_wheel_speed_pipe.recv()
             if prev_left != left_wheel or prev_right != right_wheel:
-                print "Reading %.2f %.2f " % (left_wheel, right_wheel)
                 if DISTANCE_SENSOR_TRIGGERED is False:
+                    print "Arduino Left: %.2f Right: %.2f" % \
+                          (left_wheel, right_wheel)
                     set_left_wheels(left_wheel)
                     set_right_wheels(right_wheel)
                 else:
+                    print "Arduino Left: %.2f Right: %.2f" % (-0.3, -0.3)
                     set_left_wheels(-0.3)
                     set_right_wheels(-0.3)
 
-            print "Arduino Left: %d Right: %d" % (left_wheel, right_wheel)
-    	sleep(.05)
+        sleep(.05)
+
 
 def set_left_wheels(left):
     abs_speed = left
@@ -74,9 +70,7 @@ def set_left_wheels(left):
     if left >= 0:
         LEFT_FORWARD.write(abs_speed)
         LEFT_BACKWARD.write(0.0)
-        print "Forward %f" % abs_speed
     else:
-        print "Backward %f" % abs_speed
         LEFT_FORWARD.write(0.0)
         LEFT_BACKWARD.write(abs_speed)
 
