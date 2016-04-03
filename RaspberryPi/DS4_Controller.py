@@ -25,20 +25,17 @@ def main(out_arduino_wheel_speed_pipe, out_run_prog_pipe):
     while ds4_controller.active and square_pressed is False:
 
         reverse_countdown -= 1
-        if controller.getButtonDown(controller.BTN_SQUARE) \
-                and reverse_countdown >= 0:
+        if controller.getButtonDown(controller.BTN_SQUARE):
             reverse = not reverse
             reverse_countdown = 5
 
         try:
             if controller.getAxisDown(controller.AXIS_R2):
                 right_wheels = controller.getAxisValue(controller.AXIS_R2)
-                print right_wheels
             else:
                 right_wheels = 0.0
             if controller.getAxisDown(controller.AXIS_L2):
                 left_wheels = controller.getAxisValue(controller.AXIS_L2)
-                print left_wheels
             else:
                 left_wheels = 0.0
 

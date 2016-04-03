@@ -27,10 +27,8 @@ def main():
     distance_proc = Process(target=Distance_Sensor.main, args=(dist_pipe,))
 
     arduino_proc.start()
-    sleep(7)
-
     controller_ds4_proc.start()
-    distance_proc.start()
+  #  distance_proc.start()
 
     _, in_term_prog = run_prog_pipe_cntrlr
 
