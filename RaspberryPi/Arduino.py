@@ -9,13 +9,14 @@ RIGHT_FORWARD = 27
 RIGHT_BACKWARD = 22
 
 
-def main(arduino_wheel_speeds_pipe, dist_sensor_pipe):
+def main(arduino_wheel_speeds_pipe, dist_sensor_pipe, ball_tracker_pipe):
 
     program_running = True
     distance_sensor_triggered = False
 
     _, in_wheel_speed_pipe = arduino_wheel_speeds_pipe
     _, in_dist_sensor_pipe = dist_sensor_pipe
+    _, in_ball_tracker_pipe = ball_tracker_pipe
 
     setup_gpio()
 
@@ -28,6 +29,10 @@ def main(arduino_wheel_speeds_pipe, dist_sensor_pipe):
             print distance_sensor_triggered
 
         if in_wheel_speed_pipe.poll():
+            prev_left, prev_right = left_wheel, right_wheel
+            left_wheel, right_wheel = in_wheel_speed_pipe.recv()
+
+        if in_ball_tracker_pipe.poll():
             prev_left, prev_right = left_wheel, right_wheel
             left_wheel, right_wheel = in_wheel_speed_pipe.recv()
 
