@@ -34,7 +34,7 @@ def main(arduino_wheel_speeds_pipe, dist_sensor_pipe, ball_tracker_pipe):
 
         if in_ball_tracker_pipe.poll():
             prev_left, prev_right = left_wheel, right_wheel
-            left_wheel, right_wheel = in_wheel_speed_pipe.recv()
+            left_wheel, right_wheel = in_ball_tracker_pipe.recv()
 
         if distance_sensor_triggered is False:
             if prev_left != left_wheel or prev_right != right_wheel:

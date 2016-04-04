@@ -5,17 +5,17 @@ SPEED_MULTIPLIER = 10  # MAX 10
 
 def main(out_wheels_pipe):
 
-    display = SimpleCV.Display()
+    #display = SimpleCV.Display()
     cam = SimpleCV.Camera()
     normal_display = True
 
     out_wheels, _ = out_wheels_pipe
 
-    while display.isNotDone():
-
-        if display.mouseRight:
-            normal_display = not normal_display
-            print "Display Mode:", "Normal" if normal_display else "Segmented"
+    while True:
+        print "loop2"
+        #if display.mouseRight:
+        #    normal_display = not normal_display
+        #    print "Display Mode:", "Normal" if normal_display else "Segmented"
 
         img = cam.getImage().flipHorizontal()
         dist = img.colorDistance(SimpleCV.Color.BLACK).dilate(2)
@@ -66,7 +66,7 @@ def main(out_wheels_pipe):
                         speed = SPEED_MULTIPLIER * 2
                         print "QUAD9: %d, %d" % (speed + 40, speed)
                         out_wheels.send((speed + 40, speed))
-        if normal_display:
-            img.show()
-        else:
-            segmented.show()
+        #if normal_display:
+        #    img.show()
+        #else:
+        #    segmented.show()
