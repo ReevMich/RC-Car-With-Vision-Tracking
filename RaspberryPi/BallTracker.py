@@ -1,6 +1,7 @@
 import SimpleCV
+from time import sleep
 
-SPEED_MULTIPLIER = 10  # MAX 10
+SPEED_MULTIPLIER = 5  # MAX 10
 
 
 def main(out_wheels_pipe):
@@ -12,7 +13,6 @@ def main(out_wheels_pipe):
     out_wheels, _ = out_wheels_pipe
 
     while True:
-        print "loop2"
         #if display.mouseRight:
         #    normal_display = not normal_display
         #    print "Display Mode:", "Normal" if normal_display else "Segmented"
@@ -28,44 +28,50 @@ def main(out_wheels_pipe):
                 y = circles[-1].y
                 img.drawCircle((x, y), circles[-1].radius(), SimpleCV.Color.BLUE, 3)
 
+                speed, turn_speed = (0, 0)
+
                 if x <= 213:
                     if y <= 160:
                         speed = SPEED_MULTIPLIER * 5
-                        print "QUAD1: %d, %d" % (speed, speed + 40)
-                        out_wheels.send((speed, speed + 40))
+                        print "QUAD1: ",
                     elif y <= 320:
                         speed = SPEED_MULTIPLIER * 3.5
-                        print "QUAD4: %d, %d" % (speed, speed + 40)
-                        out_wheels.send((speed, speed + 40))
+                        print "QUAD4: ",
                     elif y <= 480:
                         speed = SPEED_MULTIPLIER * 2
-                        print "QUAD7: %d, %d" % (speed, speed + 40)
-                        out_wheels.send((speed, speed + 40))
+                        print "QUAD7: ",
+
+                    turn_speed = speed + 4 * SPEED_MULTIPLIER
+                    out_wheels.send(speed, turn_speed)
+                    print "%d %d" % (speed, turn_speed)
+
                 elif x <= 426:
                     if y <= 160:
                         speed = SPEED_MULTIPLIER * 7
                         print "QUAD2: %d, %d" % (speed, speed)
-                        out_wheels.send((speed, speed))
                     elif y <= 320:
                         speed = SPEED_MULTIPLIER * 5
                         print "QUAD5: %d, %d" % (speed, speed)
-                        out_wheels.send((speed, speed))
                     elif y <= 480:
+                        speed = 0
                         print "QUAD8: %d, %d" % (0, 0)
-                        out_wheels.send((0, 0))
+
+                    out_wheels.send(speed, speed)
                 elif x <= 640:
                     if y <= 160:
                         speed = SPEED_MULTIPLIER * 5
-                        print "QUAD3: %d, %d" % (speed + 40, speed)
-                        out_wheels.send((speed + 40, speed))
+                        print "QUAD3: ",
                     elif y <= 320:
                         speed = SPEED_MULTIPLIER * 3.5
-                        print "QUAD6: %d, %d" % (speed + 40, speed)
-                        out_wheels.send((speed + 40, speed))
+                        print "QUAD6: ",
                     elif y <= 480:
                         speed = SPEED_MULTIPLIER * 2
-                        print "QUAD9: %d, %d" % (speed + 40, speed)
-                        out_wheels.send((speed + 40, speed))
+                        print "QUAD9: ",
+
+                    turn_speed = speed + 4 * SPEED_MULTIPLIER
+                    out_wheels.send(turn_speed, speed)
+                    print "%d %d" % (turn_speed, speed)
+        sleep(.05)
         #if normal_display:
         #    img.show()
         #else:
