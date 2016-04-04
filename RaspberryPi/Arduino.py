@@ -36,7 +36,7 @@ def main(arduino_wheel_speeds_pipe, dist_sensor_pipe):
                 print "Arduino Left: %.2f Right: %.2f" % \
                       (left_wheel, right_wheel)
                 set_wheel_speeds(left_wheel, LEFT_FORWARD, LEFT_BACKWARD)
-                set_wheel_speeds(left_wheel, RIGHT_FORWARD, RIGHT_BACKWARD)
+                set_wheel_speeds(right_wheel, RIGHT_FORWARD, RIGHT_BACKWARD)
         else:
             print "Triggered Arduino Left: %.2f Right: %.2f" % (-0.3, -0.3)
             set_wheel_speeds(-30, LEFT_FORWARD, LEFT_BACKWARD)
