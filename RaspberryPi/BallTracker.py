@@ -17,7 +17,7 @@ def main(out_wheels_pipe):
         #    normal_display = not normal_display
         #    print "Display Mode:", "Normal" if normal_display else "Segmented"
 
-        img = cam.getImage().flipHorizontal()
+        img = cam.getImage()
         dist = img.colorDistance(SimpleCV.Color.BLACK).dilate(2)
         segmented = dist.stretch(200, 255)
         blobs = segmented.findBlobs()
@@ -42,7 +42,7 @@ def main(out_wheels_pipe):
                         print "QUAD7: ",
 
                     turn_speed = speed + 4 * SPEED_MULTIPLIER
-                    out_wheels.send(speed, turn_speed)
+                    out_wheels.send((speed, turn_speed))
                     print "%d %d" % (speed, turn_speed)
 
                 elif x <= 426:
@@ -56,7 +56,7 @@ def main(out_wheels_pipe):
                         speed = 0
                         print "QUAD8: %d, %d" % (0, 0)
 
-                    out_wheels.send(speed, speed)
+                    out_wheels.send((speed, speed))
                 elif x <= 640:
                     if y <= 160:
                         speed = SPEED_MULTIPLIER * 5
@@ -69,7 +69,7 @@ def main(out_wheels_pipe):
                         print "QUAD9: ",
 
                     turn_speed = speed + 4 * SPEED_MULTIPLIER
-                    out_wheels.send(turn_speed, speed)
+                    out_wheels.send((turn_speed, speed))
                     print "%d %d" % (turn_speed, speed)
         sleep(.05)
         #if normal_display:

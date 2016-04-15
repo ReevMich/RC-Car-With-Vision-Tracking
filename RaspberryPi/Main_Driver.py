@@ -35,7 +35,7 @@ def main():
     arduino_proc.start()
     controller_ds4_proc.start()
     distance_proc.start()
-    ball_tracker_proc.start()
+   # ball_tracker_proc.start()
 
     _, in_term_prog = run_prog_pipe_cntrlr
 
