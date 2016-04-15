@@ -6,7 +6,7 @@ SPEED_MULTIPLIER = 5  # MAX 10
 
 def main(out_wheels_pipe):
 
-    #display = SimpleCV.Display()
+	#display = SimpleCV.Display()
     cam = SimpleCV.Camera()
     normal_display = True
 
