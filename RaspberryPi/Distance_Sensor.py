@@ -42,11 +42,11 @@ def main(dist_pipe):
                 
         distance = round(distance, 2)
 
-        if distance < 15 and prev_value is False:
+        if distance < 20 and prev_value is False:
             prev_value = True
             out_sensor.send(True)
             print "Stop!!!!"
-        elif prev_value is True and distance >= 15:
+        elif prev_value is True and distance >= 20:
             prev_value = False
             out_sensor.send(False)
 
