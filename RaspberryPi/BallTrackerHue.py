@@ -3,12 +3,12 @@
 import SimpleCV
 from time import sleep
 
-SPEED_MULTIPLIER = 5  # MAX 10
+SPEED_MULTIPLIER = 2  # MAX 10
 
 
 def main(out_wheels_pipe):
 
-    #display = SimpleCV.Display()
+    display = SimpleCV.Display()
     cam = SimpleCV.Camera()
     #normal_display = True
 
@@ -74,7 +74,7 @@ def main(out_wheels_pipe):
                     out_wheels.send((turn_speed, speed))
                     print "%d %d" % (turn_speed, speed)
             sleep(.05)
-            #if normal_display:
-                #img.show()
+            if normal_display:
+                img.show()
             #else:
             #    segmented.show()
