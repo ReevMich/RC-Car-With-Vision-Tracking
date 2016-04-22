@@ -3,7 +3,7 @@
 import SimpleCV
 from time import sleep
 
-SPEED_MULTIPLIER = 2  # MAX 10
+SPEED_MULTIPLIER = 5  # MAX 10
 test = False
 
 
@@ -21,7 +21,7 @@ def main(out_wheels_pipe):
         #    print "Display Mode:", "Normal" if normal_display else "Segmented"
         print "img loop"
         img = cam.getImage()
-        dist = img.colorDistance(SimpleCV.Color.BLACK).dilate(2)
+        dist = img.colorDistance(SimpleCV.Color.ORANGE).dilate(2)
         segmented = dist.stretch(200, 255)
         blobs = segmented.findBlobs()
         if blobs:
@@ -48,7 +48,7 @@ def main(out_wheels_pipe):
                     turn_speed = speed + 4 * SPEED_MULTIPLIER
                     
                     if not test:
-                        out_wheels.send((speed, turn_speed))
+                        out_wheels.send((turn_speed, -speed))
                     print "%d %d" % (speed, turn_speed)
 
                 elif x <= 426:
@@ -78,7 +78,7 @@ def main(out_wheels_pipe):
                     turn_speed = speed + 4 * SPEED_MULTIPLIER
 
                     if not test:
-                        out_wheels.send((turn_speed, speed))
+                        out_wheels.send((-speed, turn_speed))
                     print "%d %d" % (turn_speed, speed)
 
 	    else:
