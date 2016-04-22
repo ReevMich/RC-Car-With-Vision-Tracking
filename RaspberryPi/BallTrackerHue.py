@@ -3,14 +3,14 @@
 import SimpleCV
 from time import sleep
 
-SPEED_MULTIPLIER = 2  # MAX 10
+SPEED_MULTIPLIER = 5  # MAX 10
 
 
 def main(out_wheels_pipe):
 
-    display = SimpleCV.Display()
+    #display = SimpleCV.Display()
     cam = SimpleCV.Camera()
-    #normal_display = True
+    normal_display = True
 
     out_wheels, _ = out_wheels_pipe
 
@@ -18,7 +18,7 @@ def main(out_wheels_pipe):
         #if display.mouseRight:
         #    normal_display = not normal_display
         #    print "Display Mode:", "Normal" if normal_display else "Segmented"
-
+        print "img loop"
         img = cam.getImage()
         dist = img.colorDistance(SimpleCV.Color.ORANGE).dilate(2)
         segmented = dist.stretch(200, 255)
@@ -31,7 +31,7 @@ def main(out_wheels_pipe):
                 img.drawCircle((x, y), circles[-1].radius(), SimpleCV.Color.BLUE, 3)
 
                 speed, turn_speed = (0, 0)
-
+		print str(circles[-1].radius())
                 if x <= 213:
                     if y <= 160:
                         speed = SPEED_MULTIPLIER * 5
@@ -73,8 +73,10 @@ def main(out_wheels_pipe):
                     turn_speed = speed + 4 * SPEED_MULTIPLIER
                     out_wheels.send((turn_speed, speed))
                     print "%d %d" % (turn_speed, speed)
-            sleep(.05)
-            if normal_display:
-                img.show()
+            # sleep(.05)
+            #if normal_display:
+            #img.show()
             #else:
             #    segmented.show()
+if __name__ == "__main__":
+    main(None)

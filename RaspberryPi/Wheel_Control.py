@@ -38,12 +38,12 @@ def main(arduino_wheel_speeds_pipe, dist_sensor_pipe, ball_tracker_pipe):
 
         if distance_sensor_triggered is False:
             if prev_left != left_wheel or prev_right != right_wheel:
-                print "Arduino Left: %.2f Right: %.2f" % \
-                      (left_wheel, right_wheel)
+                #print "Arduino Left: %.2f Right: %.2f" % \
+                #      (left_wheel, right_wheel)
                 set_wheel_speeds(left_wheel, LEFT_FORWARD, LEFT_BACKWARD)
                 set_wheel_speeds(right_wheel, RIGHT_FORWARD, RIGHT_BACKWARD)
         else:
-            print "Triggered Arduino Left: %.2f Right: %.2f" % (-0.3, -0.3)
+            #print "Triggered Arduino Left: %.2f Right: %.2f" % (-0.3, -0.3)
             set_wheel_speeds(-30, LEFT_FORWARD, LEFT_BACKWARD)
             set_wheel_speeds(-30, RIGHT_FORWARD, RIGHT_BACKWARD)
 

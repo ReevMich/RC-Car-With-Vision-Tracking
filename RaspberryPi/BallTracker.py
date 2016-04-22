@@ -16,7 +16,7 @@ def main(out_wheels_pipe):
         #if display.mouseRight:
         #    normal_display = not normal_display
         #    print "Display Mode:", "Normal" if normal_display else "Segmented"
-
+	print "Camera loop"
         img = cam.getImage()
         dist = img.colorDistance(SimpleCV.Color.BLACK).dilate(2)
         segmented = dist.stretch(200, 255)
@@ -71,7 +71,7 @@ def main(out_wheels_pipe):
                     turn_speed = speed + 4 * SPEED_MULTIPLIER
                     out_wheels.send((turn_speed, speed))
                     print "%d %d" % (turn_speed, speed)
-        sleep(.05)
+        sleep(.01)
         #if normal_display:
         #    img.show()
         #else:
