@@ -3,16 +3,17 @@
 import SimpleCV
 from time import sleep
 
-SPEED_MULTIPLIER = 5  # MAX 10
+SPEED_MULTIPLIER = 2  # MAX 10
+test = False
 
 
 def main(out_wheels_pipe):
 
     #display = SimpleCV.Display()
     cam = SimpleCV.Camera()
-    normal_display = True
 
-    out_wheels, _ = out_wheels_pipe
+    if not test:
+        out_wheels, _ = out_wheels_pipe
 
     while True:
         #if display.mouseRight:
@@ -20,7 +21,7 @@ def main(out_wheels_pipe):
         #    print "Display Mode:", "Normal" if normal_display else "Segmented"
         print "img loop"
         img = cam.getImage()
-        dist = img.colorDistance(SimpleCV.Color.ORANGE).dilate(2)
+        dist = img.colorDistance(SimpleCV.Color.BLACK).dilate(2)
         segmented = dist.stretch(200, 255)
         blobs = segmented.findBlobs()
         if blobs:
@@ -29,9 +30,10 @@ def main(out_wheels_pipe):
                 x = circles[-1].x
                 y = circles[-1].y
                 img.drawCircle((x, y), circles[-1].radius(), SimpleCV.Color.BLUE, 3)
+                
+                if not test:
+                    speed, turn_speed = (0, 0)
 
-                speed, turn_speed = (0, 0)
-		print str(circles[-1].radius())
                 if x <= 213:
                     if y <= 160:
                         speed = SPEED_MULTIPLIER * 5
@@ -44,7 +46,9 @@ def main(out_wheels_pipe):
                         print "QUAD7: ",
 
                     turn_speed = speed + 4 * SPEED_MULTIPLIER
-                    out_wheels.send((speed, turn_speed))
+                    
+                    if not test:
+                        out_wheels.send((speed, turn_speed))
                     print "%d %d" % (speed, turn_speed)
 
                 elif x <= 426:
@@ -58,7 +62,8 @@ def main(out_wheels_pipe):
                         speed = 0
                         print "QUAD8: %d, %d" % (0, 0)
 
-                    out_wheels.send((speed, speed))
+                    if not test:
+                        out_wheels.send((speed, speed))
                 elif x <= 640:
                     if y <= 160:
                         speed = SPEED_MULTIPLIER * 5
@@ -71,12 +76,14 @@ def main(out_wheels_pipe):
                         print "QUAD9: ",
 
                     turn_speed = speed + 4 * SPEED_MULTIPLIER
-                    out_wheels.send((turn_speed, speed))
+
+                    if not test:
+                        out_wheels.send((turn_speed, speed))
                     print "%d %d" % (turn_speed, speed)
-            # sleep(.05)
-            #if normal_display:
-            #img.show()
-            #else:
-            #    segmented.show()
+
+	    else:
+		out_wheels.send((0,0))
+
 if __name__ == "__main__":
     main(None)
+
