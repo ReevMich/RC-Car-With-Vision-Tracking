@@ -133,10 +133,10 @@ to a bright red:
 
 See ``ds4drv --help`` for a list of all the options.
 
-#####DS4 How to use Python
-How to use in (Python)
-^^^^^^^^^^^^^^^^^^^^^^
-- Navigate to the **DS4Controller** folder and run the **run.sh** script.
+
+#####DS4 How to use in (Python)
+-------------------------------
+- Navigate to the **DS4Controller** folder and run the **run.sh** script. **MAKE SURE SWIG IS ALL THE DEPENDENCIES ARE INSTALLED**
     - DO NOT CHANGE THE FILE UNLESS YOU KNOW WHAT YOURE DOING.
 
 - In order to implement the DS4 controller module into a python project, you have to 'import controller'.
