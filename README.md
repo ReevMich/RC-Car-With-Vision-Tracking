@@ -1,13 +1,6 @@
-===========================
-RC Car with Vision Tracking
-===========================
 
-Author(s)
-* **[Jesus Diaz](https://github.com/diazjesu)**
-* **[Michael Reeves](https://github.com/ReevMich)**
-* **[Josh Dassinger](https://github.com/dassjosh)**
-* **[Walter Cepeda](https://github.com/waltercpd)**
-
+#RC Car with Vision Tracking [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
+----
 The RC Car with Vision Tracking is a custom built RC Car with a raspberry pi as the main computer.
 This car uses an arduino and H-drive to control the motor and what speed they run at.
 The way the RC car with Vision Tracking moves is by utilizing  a camera to track a ball of a predetermined color.
@@ -15,7 +8,7 @@ As a secondary control system we have a bluetooth Playstation 4 control for manu
 
 * GitHub: https://github.com/du-linux/Team1/
 
-Features
+##Features
 --------
 
 - Manually able to control Remote Control Car with Playstation 4 Controller -- Wired
@@ -27,16 +20,18 @@ Features
 - Controlling all 4-wheels with python w/out Arduino
 - Reverse Support with the Playstation 4 Controller.
 
-Dependencies
 ------------
+</br>
 
--------------------
+###Dependencies
+
+
+
 ####Vision Tracking
 -------------------
 ......
 
 
----------
 ####DS4DRV
 ---------
 - [Python](http://python.org/)_ 2.7 or 3.3+ (for Debian/Ubuntu you need to
@@ -62,7 +57,7 @@ Installing a recent version of bluez **Required for Bluetooth**
     wget http://www.kernel.org/pub/linux/bluetooth/bluez-5.37.tar.xz
     tar xvf bluez-5.37.tar.xz
 
-Installing SWIG - The C code Wrapper to Python ** Required to compile C code to Python **
+Installing SWIG - The C code Wrapper to Python ***Required to wrapping C code to Python***
   
     sudo apt-get install swig
 
@@ -72,71 +67,24 @@ Installing SWIG - The C code Wrapper to Python ** Required to compile C code to 
 Unless your system is using BlueZ 5.14 (which was released recently) or higher
 it is not possible to pair with the DS4. Therefore this workaround exists,
 which connects directly to the DS4 when it has been started in pairing mode
-(by holding **Share + the PS button** until the LED starts blinking rapidly).
+(by holding **Share + the PS button** until the LED starts blinking rapidly), then
+run any of the following commands to get the controller synced with your system.
 
-This is the default mode when running without any options:
+This is the default mode as root when running without any options:
 
-    $ ds4drv
+    $ sudo ds4drv
+    
+However we run ds4drv as root as a background process:
 
-Supported protocols: **Bluetooth** and **USB**
+    $ sudo dsr4dv --daemon
 
-This mode uses the Linux kernel feature *hidraw* to talk to already existing
-devices on the system.
-
-    $ ds4drv --hidraw
-
-To use the DS4 via bluetooth in this mode you must pair it first. This requires
-**BlueZ 5.14+** as there was a bug preventing pairing in earlier verions. How you
-actually pair the DS4 with your computer depends on how your system is setup,
-suggested googling: *<distro name> bluetooth pairing*
-
-
-#####DS4 Permissions
-----------------
-
-If you want to use ds4drv as a normal user, you need to make sure ds4drv has
-permissions to use certain features on your system.
-
-ds4drv uses the kernel module *uinput* to create input devices in user land and
-the module *hidraw* to communicate with DualShock 4 controllers (when using
-``--hidraw``), but this usually requires root permissions. You can change the
-permissions by copying the `udev rules file <udev/50-ds4drv.rules>`_ to
-``/etc/udev/rules.d/``.
-
-You may have to reload your udev rules after this with:
-
-
-    $ sudo udevadm control --reload-rules
-    $ sudo udevadm trigger
-
-
-#####DS4 Configuration file
----------------------------
-
-The preferred way of configuring ds4drv is via a config file.
-Take a look at `ds4drv.conf <ds4drv.conf>`_ for example usage.
-
-ds4drv will look for the config file in the following paths:
-
-- ``~/.config/ds4drv.conf``
-- ``/etc/ds4drv.conf``
-
-... or you can specify your own location with ``--config``.
-
-
-#####DS4 Command line options
---------------------
-You can also configure using command line options, this will set the LED
-to a bright red:
-
-    $ ds4drv --led ff0000
 
 See ``ds4drv --help`` for a list of all the options.
 
 
 #####DS4 How to use in (Python)
 -------------------------------
-- Navigate to the **DS4Controller** folder and run the **run.sh** script. **MAKE SURE SWIG IS ALL THE DEPENDENCIES ARE INSTALLED**
+- Navigate to the **DS4Controller/src** folder and run the **run.sh** script. **MAKE SURE SWIG AND ALL THE DEPENDENCIES ABOVE ARE INSTALLED**
     - DO NOT CHANGE THE FILE UNLESS YOU KNOW WHAT YOURE DOING.
 
 - In order to implement the DS4 controller module into a python project, you have to 'import controller'.
@@ -240,3 +188,10 @@ Check the example above to find out some of these functions and constants are us
 ==============================
 ##Known Issues / Limitations
 ==============================
+
+==============================
+## Team
+
+[![Jesus Diaz](https://avatars1.githubusercontent.com/u/16565647?v=3&s=144)](https://github.com/diazjesu) | [![Michael Reeves](https://avatars1.githubusercontent.com/u/7333415?v=3&s=144)](https://github.com/ReevMich) | [![Walter Cepeda](https://avatars1.githubusercontent.com/u/16603134?v=3&s=144)](https://github.com/waltercpd) | [![Josh Dassigner](https://avatars1.githubusercontent.com/u/14892282?v=3&s=144)](https://github.com/dassjosh)
+---|---|---|---
+[Jesus Diaz](https://github.com/diazjesu) | [Michael Reeves](https://github.com/ReevMich) | [Walter Cepeda](https://github.com/waltercpd) |  [Josh Dassigner](https://github.com/dassjosh)
