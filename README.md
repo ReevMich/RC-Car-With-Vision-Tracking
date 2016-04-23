@@ -9,18 +9,18 @@ As a secondary control system we have a bluetooth Playstation 4 control for manu
 * GitHub: https://github.com/du-linux/Team1/
 
 ##Features
---------
+========
 
-- Manually able to control Remote Control Car with Playstation 4 Controller -- Wired
-- Bluetooth Support with Playstation 4 Controller
-- Remote Control Car follows a color ball
-- Implemented Changing License Plate -- using Arduino
-- Implemented Object avoidance, using Ultra Sonic Sensors, with automatic reverse
-- Features an Dual H-Bridge that controls all four wheels
-- Controlling all 4-wheels with python w/out Arduino
+- Control Remote Control Car with Playstation 4 Controller -- Wired/Wirelessly **Bluetooth** 
+- Remote Control Car tracks and follows a colored ball
+- Randomized License Plate -- (**using Arduino**)
 - Reverse Support with the Playstation 4 Controller.
+- Object avoidance, (**using Ultra Sonic Sensors**), with automatic reverse
+- Features a (**Dual H-Bridge Stepper Motor**) that controls all four motors/wheels
+- Controlling all 4-wheels with python dirrectly to GPIO
 
-------------
+
+========
 </br>
 
 ###Dependencies
@@ -28,12 +28,12 @@ As a secondary control system we have a bluetooth Playstation 4 control for manu
 
 
 ####Vision Tracking
--------------------
+==================
 ......
 
 
 ####DS4DRV
----------
+==========
 - [Python](http://python.org/)_ 2.7 or 3.3+ (for Debian/Ubuntu you need to
   install the *python2.7-dev* or *python3.3-dev* package)
 - [python-setuptools](https://pythonhosted.org/setuptools/)
@@ -83,7 +83,7 @@ See ``ds4drv --help`` for a list of all the options.
 
 
 #####DS4 How to use in (Python)
--------------------------------
+=========
 - Navigate to the **DS4Controller/src** folder and run the **run.sh** script. **MAKE SURE SWIG AND ALL THE DEPENDENCIES ABOVE ARE INSTALLED**
     - DO NOT CHANGE THE FILE UNLESS YOU KNOW WHAT YOURE DOING.
 
@@ -120,7 +120,7 @@ See ``ds4drv --help`` for a list of all the options.
             print("RS_Y=%d" % controller.getAxisValue(controller.AXIS_RIGHT_STICK_Y))
 ```
 
-######Controller Constants
+######Controller Constants/Definitions
 
 ``` python
     /* DO NOT CHANGE ANY OF THESE HARDCODED ENUM VALUES IN THE SOURCE CODE */
@@ -171,25 +171,31 @@ Check the example above to find out some of these functions and constants are us
 ----------------------------------------------------------------------------
 
 
--------------------
+
 ####Distance Sensor
--------------------
+=============
 .....
 
+------------
+</br>
 
--------------------
 ####License Plate
--------------------
+============
 ......
 
+-----------
+</br>
 
-==============================
+
 ##Known Issues / Limitations
 ==============================
+.......
 
-==============================
-## Team
+-----------------------------
+</br>
 
+## #TeamTux (#TeamLinux)
+===========
 [![Jesus Diaz](https://avatars1.githubusercontent.com/u/16565647?v=3&s=144)](https://github.com/diazjesu) | [![Michael Reeves](https://avatars1.githubusercontent.com/u/7333415?v=3&s=144)](https://github.com/ReevMich) | [![Walter Cepeda](https://avatars1.githubusercontent.com/u/16603134?v=3&s=144)](https://github.com/waltercpd) | [![Josh Dassigner](https://avatars1.githubusercontent.com/u/14892282?v=3&s=144)](https://github.com/dassjosh)
 ---|---|---|---
 [Jesus Diaz](https://github.com/diazjesu) | [Michael Reeves](https://github.com/ReevMich) | [Walter Cepeda](https://github.com/waltercpd) |  [Josh Dassigner](https://github.com/dassjosh)
