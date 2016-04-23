@@ -120,8 +120,7 @@ See ``ds4drv --help`` for a list of all the options.
             print("RS_Y=%d" % controller.getAxisValue(controller.AXIS_RIGHT_STICK_Y))
 ```
 
-Controller Constants
---------------------
+######Controller Constants
 
 ``` python
     /* DO NOT CHANGE ANY OF THESE HARDCODED ENUM VALUES IN THE SOURCE CODE */
@@ -150,8 +149,7 @@ Controller Constants
     AXIS_DOWN_DPAD = 10
 ```
 
-Controller Functions
---------------------
+######Controller Functions
 
 Check the example above to find out some of these functions and constants are used.
 
