@@ -91,6 +91,14 @@ Installing SWIG - The C code Wrapper to Python ***Required to wrapping C code to
   
     sudo apt-get install swig
 
+#####Distance Sensor
+- Importing RPi.GPIO allows for use of the gpio pins on the Raspberry Pi
+- Improting time allows for calculating time betwwen triger and echo.
+
+
+    import RPi.GPIO as GPIO
+    import time
+
 #####Using DS4
 ---------
 
@@ -204,6 +212,8 @@ Check the example above to find out some of these functions and constants are us
 
 ####Distance Sensor
 =============
+
+
 .....
 
 ------------
