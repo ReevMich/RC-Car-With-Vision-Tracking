@@ -91,6 +91,15 @@ Installing SWIG - The C code Wrapper to Python ***Required to wrapping C code to
   
     sudo apt-get install swig
 
+#####Distance Sensor
+- Importing RPi.GPIO allows for use of the gpio pins on the Raspberry Pi
+- Importing time allows for calculating time between triger and echo.
+
+``` python
+    import RPi.GPIO as GPIO
+    import time
+```
+
 #####Using DS4
 ---------
 
@@ -114,7 +123,7 @@ See ``ds4drv --help`` for a list of all the options.
 
 #####DS4 How to use in (Python)
 =========
-- Navigate to the **DS4Controller/src** folder and run the **init.sh** script. **MAKE SURE SWIG AND ALL THE DEPENDENCIES ABOVE ARE INSTALLED**
+- Navigate to the **DS4Controller/src** folder and run the **run.sh** script. **MAKE SURE SWIG AND ALL THE DEPENDENCIES ABOVE ARE INSTALLED**
     - DO NOT CHANGE THE FILE UNLESS YOU KNOW WHAT YOURE DOING.
 
 - In order to implement the DS4 controller module into a python project, you have to 'import controller'.
@@ -204,6 +213,40 @@ Check the example above to find out some of these functions and constants are us
 
 ####Distance Sensor
 =============
+How Distance Sensor Works
+
+Distance Sensors uses the HC-sr04 sensor. Using the GPIO pins the pi sends a signal to the HC-sr04 to triger the sensor.
+The sensor then recives a echo signal and calculates the diffrence in time between the trigger and echo. 
+This gives the distance in cm after mulitipliying the time by 17150. 
+```
+        GPIO.output(TRIG, True)
+        time.sleep(0.00001)
+        GPIO.output(TRIG, False)
+
+        while GPIO.input(ECHO) == 0:
+            pulse_start = time.time()
+
+        while GPIO.input(ECHO) == 1:
+            pulse_end = time.time()
+                
+        pulse_duration = pulse_end - pulse_start
+                
+        distance = pulse_duration * 17150
+                
+        distance = round(distance, 2)
+```
+
+When the distance is below a certain distance the car will auto reverse to prevent hiting an obect.
+```
+        if distance < 20 and prev_value is False:
+            prev_value = True
+            out_sensor.send(True)
+            print "Stop!!!!"
+        elif prev_value is True and distance >= 20:
+            prev_value = False
+            out_sensor.send(False)
+```
+
 .....
 
 ------------
@@ -215,26 +258,6 @@ Check the example above to find out some of these functions and constants are us
 
 -----------
 </br>
-
-###Usage
-============
-Once all the dependencies are setup you are ready to begin running the program.
-
-In your terminal run:
-
-    sudo dsr4dv --daemon
-
-Once that code has forked into the background turn the on PS4 controller by holding by holding **Share + the PS button** until the LED starts blinking rapidly. After about 15 seconds your controller should connect to your raspberry pi and the color bar will be solid blue. Your controller is now configured.
-
-To launch the ball tracker in terminal run:
-
-    sudo ./Main_Driver.py
-    
-This will begin the startup of the program. If you aren't able to get the controller working thats okay because the program can run without it. The process will just crash on startup.
-
-The program will begin searching for the ball and chase it down once it has detected it.
-
-To change the color of the ball you first need to find the color opposite of the color ball you are using. After that you put the name of the SimpleCV equivenlent of that color into the global COLOR_TARGET field.
 
 
 ##Known Issues / Limitations
