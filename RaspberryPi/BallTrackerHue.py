@@ -3,7 +3,9 @@
 import SimpleCV
 from time import sleep
 
-SPEED_MULTIPLIER = 3  # MAX 10
+TARGET_COLOR = SimpleCV.Color.ORANGE
+
+SPEED_MULTIPLIER = 6  # MAX 10
 test = False
 POWER = 8 * SPEED_MULTIPLIER + 10
 
@@ -12,12 +14,13 @@ def main(out_wheels_pipe):
 
     #display = SimpleCV.Display()
     cam = SimpleCV.Camera()
+    normal_display = True
 
     img = cam.getImage()
 
     center_width = img.width/2.0
     center_height = img.height/2.0
-    percentage_middle = center_width * .05
+    percentage_middle = center_width * .10
 
     print "Center Width: %.2f" % center_width
     print "Center Height: %.2f" % center_height
@@ -32,7 +35,7 @@ def main(out_wheels_pipe):
         #    print "Display Mode:", "Normal" if normal_display else "Segmented"
         print "img loop"
         img = cam.getImage()
-        dist = img.colorDistance(SimpleCV.Color.ORANGE).dilate(2)
+        dist = img.colorDistance(TARGET_COLOR).dilate(2)
         segmented = dist.stretch(200, 255)
         blobs = segmented.findBlobs()
         if blobs:
@@ -45,17 +48,25 @@ def main(out_wheels_pipe):
                 if x < (center_width - percentage_middle):
                     x_percentage = float(x) / (center_width - percentage_middle)
                     print "LEFT: NON ABS: x_percentage %.2f" % x_percentage
-                    x_percentage = -1.0*(x_percentage - 1)
+                    x_percentage = -1.0*(x_percentage - 1) * POWER
                     print "LEFT: ABS: x_percentage %.2f" % x_percentage
-                    left_wheel = x_percentage * POWER
-                    right_wheel = -x_percentage * POWER
+                    if x_percentage > 30:
+                        left_wheel = x_percentage
+                        right_wheel = -x_percentage
+                    else:
+                        left_wheel = 30
+                        right_wheel = -30
                 elif x > (center_width + percentage_middle):
                     x_percentage = float(x) / (center_width + percentage_middle)
                     print "RIGHT: NON ABS: x_percentage %.2f" % x_percentage
-                    x_percentage = -1.0*(x_percentage - 2)
+                    x_percentage = -1.0*(x_percentage - 2) * POWER
                     print "RIGHT: ABS: x_percentage %.2f" % x_percentage
-                    left_wheel = -x_percentage * POWER
-                    right_wheel = x_percentage * POWER
+                    if x_percentage > 30:
+                        left_wheel = -x_percentage
+                        right_wheel = x_percentage
+                    else:
+                        left_wheel = -30
+                        right_wheel = 30
                 else:
                     left_wheel = POWER
                     right_wheel = POWER
