@@ -93,7 +93,7 @@ Installing SWIG - The C code Wrapper to Python ***Required to wrapping C code to
 
 #####Distance Sensor
 - Importing RPi.GPIO allows for use of the gpio pins on the Raspberry Pi
-- Importing time allows for calculating time betwwen triger and echo.
+- Importing time allows for calculating time between triger and echo.
 
 ``` python
     import RPi.GPIO as GPIO
