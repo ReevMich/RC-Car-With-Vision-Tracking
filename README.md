@@ -29,12 +29,38 @@ As a secondary control system we have a bluetooth Playstation 4 control for manu
 
 ####Vision Tracking
 ==================
-Install SimpleCV:
+Install SimpleCV. This was the method we used even though there are many ways to install SimpleCV:
 
     $ sudo apt-get install ipython python-opencv python-scipy python-numpy python-setuptools python-pip
     $ sudo pip install svgwrite
     $ sudo pip install https://github.com/sightmachine/SimpleCV/zipball/master
 
+More documentation on SimpleCV at (http://simplecv.org)
+
+- Simple CV uses Python so you can run it either on iPython to test out the camera or run a .py file
+- Importing SimpleCV allows you to grab the Image from the Camera
+- This allows to have the image to keep refreshing
+
+``` python
+    import SimpleCV
+    
+    cam = SimpleCV.Camera()
+    while True:
+        img = cam.getImage()
+```
+
+Using colorDistance to dilate the image allows it to search for one color. We used ORANGE to find our blue ball. 
+Segmenting the image makes it easier to only see the colored object to be able to find the "blobs"
+
+``` python
+    dist = img.colorDistance(SimpleCV.Color.ORANGE).dilate(2)
+    segmented = dist.stretch(200,255)
+    blobs = segmented.findBlobs()
+```
+
+The filter function for the blobs creates the circle around the ball. With the circle object, we can grab the x and y coordinates which we use for our wheel power logic.
+
+    
 
 ####DS4DRV
 ==========
