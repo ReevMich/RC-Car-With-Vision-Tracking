@@ -29,7 +29,11 @@ As a secondary control system we have a bluetooth Playstation 4 control for manu
 
 ####Vision Tracking
 ==================
-......
+Install SimpleCV:
+
+    $ sudo apt-get install ipython python-opencv python-scipy python-numpy python-setuptools python-pip
+    $ sudo pip install svgwrite
+    $ sudo pip install https://github.com/sightmachine/SimpleCV/zipball/master
 
 
 ####DS4DRV
