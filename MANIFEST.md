@@ -12,9 +12,7 @@ Contains a list of each file and its purpose
 * 	***/RaspberryPi/***: 
   		contains all the raspberry-pi programs
 	* **BallTracker.py**: 
-	  ???
-	* **BallTrackerHue.py**: 
-	  ???
+	  Vision tracking using the connected camera to find circles and uses the coordinates accordingly to send the power to the correct wheels
 	* **DS4_Controller.py**: 
     PS4 Controller thread that controls the motors and sends messages through pipes in python
 	* **Distance_Sensor.py**: 
