@@ -31,9 +31,9 @@ As a secondary control system we have a bluetooth Playstation 4 control for manu
 ==================
 Install SimpleCV. This was the method we used even though there are many ways to install SimpleCV:
 
-    $ sudo apt-get install ipython python-opencv python-scipy python-numpy python-setuptools python-pip
-    $ sudo pip install svgwrite
-    $ sudo pip install https://github.com/sightmachine/SimpleCV/zipball/master
+    sudo apt-get install ipython python-opencv python-scipy python-numpy python-setuptools python-pip
+    sudo pip install svgwrite
+    sudo pip install https://github.com/sightmachine/SimpleCV/zipball/master
 
 More documentation on SimpleCV at (http://simplecv.org)
 
@@ -78,8 +78,8 @@ but you may want to use your distro's packages if available:
 
 Installing the latest release is simple by using [pip](http://www.pip-installer.org/):
 
-    $ sudo pip install ds4drv
-
+    sudo pip install ds4drv
+    sudo pip install evdev==0.5.0
 
 Installing a recent version of bluez **Required for Bluetooth**    
 
@@ -102,11 +102,11 @@ run any of the following commands to get the controller synced with your system.
 
 This is the default mode as root when running without any options:
 
-    $ sudo ds4drv
+    sudo ds4drv
     
 However we run ds4drv as root as a background process:
 
-    $ sudo dsr4dv --daemon
+    sudo dsr4dv --daemon
 
 
 See ``ds4drv --help`` for a list of all the options.
