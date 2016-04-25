@@ -1,63 +1,105 @@
 #!/usr/bin/python
 
+"""
+EXIT CODES:
+0 - Successfully terminated :)
+1 - Invalid number of command line arguments
+2 - -m was not passed
+3 - Invalid mode argument should be 0 or 1
+"""
+
 # Imports
-import serial
-import SimpleCV
-from threading import Thread
-from DS4Controller.src import controller
-
-# Global Variables
-arduino = serial.Serial('/dev/ttyACM0', 9600)  # USB serial connection with baud rate of 9600
-cam = SimpleCV.Camera()
-
+from time import sleep
+from multiprocessing import Process, Pipe
+import DS4_Controller
+import Wheel_Control
+import Distance_Sensor
+import ball_tracking
+from sys import argv, exit
+import subprocess
 
 # Main Method
 def main():
-    
-    print("Serial connected on " + arduino.name)
-    
-    # creates a new controller object.
-    ds4 = controller.newController()
-    # checks if the controller is still active.
-    while(ds4.active):
-        if(controller.getAxisDown(controller.AXIS_R2)):
-            print("R2=%d" % controller.getAxisValue(controller.AXIS_R2))
 
-        if(controller.getAxisDown(controller.AXIS_L2)):
-            print("L2=%d" % controller.getAxisValue(controller.AXIS_L2))
+    run_prog = True  # Keeps the program loading
 
-        if(controller.getAxisDown(controller.AXIS_LEFT_STICK_X)):
-            print("LS_X=%d" % controller.getAxisValue(controller.AXIS_LEFT_STICK_X))
+    run_prog_pipe = Pipe()  # Run Program Pipe
+    controller_pipe = Pipe()  # PS4 Controller Pipe
+    dist_pipe = Pipe()  # Distance Sensor Pipe
+    ball_tracker_pipe = Pipe()  # Ball Tracker Pipe
 
-        if(controller.getAxisDown(controller.AXIS_LEFT_STICK_Y)):
-            print("LS_Y=%d" % controller.getAxisValue(controller.AXIS_LEFT_STICK_Y))
+    controller_ds4_proc = None
+    ball_tracker_proc = None
 
-        if(controller.getAxisDown(controller.AXIS_RIGHT_STICK_X)):
-            print("RS_X=%d" % controller.getAxisValue(controller.AXIS_RIGHT_STICK_X))
+    if len(argv) is 3:
+        if argv[1] == '-mode':
+            if argv[2] == '0':
+                subprocess.call(["sudo", "ds4drv", "--daemon"])
+                
+                controller_ds4_proc = Process(target=DS4_Controller.main,
+                                              args=(controller_pipe,
+                                                    run_prog_pipe))
 
-        if(controller.getAxisDown(controller.AXIS_RIGHT_STICK_Y)):
-            print("RS_Y=%d" % controller.getAxisValue(controller.AXIS_RIGHT_STICK_Y))
+                controller_ds4_proc.start()
+                print "RUNNING CONTROLLER MODE"
+            elif argv[2] == '1':
+                ball_tracker_proc = Process(target=ball_tracking.main,
+                                            args=(ball_tracker_pipe,
+                                                  run_prog_pipe))
+                ball_tracker_proc.start()
+                print "RUNNING BALL TRACKER MODE"
+            else:
+                print "0 or 1 was not specified"
+                usage()
+                exit(3)
+        else:
+            print "-m was not specified"
+            usage()
+            exit(2)
+    else:
+        print "Invalid number of arguments"
+        usage()
+        exit(1)
 
-    
-    camera_thread = ImageThread(cam)
-    camera_thread.start()
-    while True:
-        command = raw_input("Enter Car Commands: ")
-        set_ardunio_wheel_speeds(command)
+    # Configure Wheel and distance Proccess
+    wheel_proc = Process(target=Wheel_Control.main, args=(controller_pipe,
+                                                            dist_pipe,
+                                                            ball_tracker_pipe))
 
-def set_ardunio_wheel_speeds(command):
-    arduino.write(command)
+    distance_proc = Process(target=Distance_Sensor.main, args=(dist_pipe,))
 
-# Class for handling streaming from webcam
-class ImageThread(Thread):
-    def __init__(self, camera):
-        Thread.__init__(self)
-        self.cam = camera
+    # Run wheel and distance process the processes
+    wheel_proc.start()
+    distance_proc.start()
 
-    def run(self):
-        while True:
-            img = cam.getImage()
-            img.show()
+    # Gets the out pipe of run program
+    _, in_term_prog = run_prog_pipe
+
+    # Keep running the program until we should terminate
+    while run_prog:
+        run_prog = in_term_prog.recv()
+        # print "Program Should terminate:" + str(not run_prog)
+        sleep(1)
+
+    # Terminate all the processes if the program should terminate
+    if controller_ds4_proc is not None:
+        controller_ds4_proc.terminate()
+
+    if ball_tracker_proc is not None:
+        ball_tracker_proc.terminate()
+
+    distance_proc.terminate()
+    wheel_proc.terminate()
+
+    exit(0)
+
+
+def usage():
+    print "Usage:"
+    print "Program needs 2 arguments"
+    print "-m for specifying this will be using a mode"
+    print "0 for using controller or 1 for using vision tracking"
+    print "EX: sudo ./Main_Driver -m 0"
 
 
 if __name__ == '__main__':

@@ -1,4 +1,3 @@
-
 %module controller
 %{
 #include "DS4.h"
