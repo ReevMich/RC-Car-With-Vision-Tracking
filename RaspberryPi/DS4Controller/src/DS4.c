@@ -1,11 +1,16 @@
+///////////////////////////////////////////////////////////////////////
+// Author(s): Michael Reeves
+// File: DS4.c
+// Description: DS4 Controller driver takes input from the controller 
+//          and stores the values into an array of buttons and inputs.
+///////////////////////////////////////////////////////////////////////
 #include "DS4.h"
-#include <errno.h>
 
 static int js_fd;
 
 static js_state state;
 
-// static functions must be defined in the file their used in.
+// static functions must be defined in the file their used in. (FROM WHAT I UNDERSTAND)
 static int GetRawAxis(int inputValue);
 static void ReadEvent(struct js_event *jse);
 static void deleteController(Controller controller);
@@ -24,7 +29,8 @@ void* Loop(void* parameters){
   return 0;
 }
 
-// ReadEvent -- 
+// ReadEvent -- Reads from the controller everytime an input button is pressed.
+// Also we store 
 static void ReadEvent(struct js_event *jse){
   
   int bytes = read(js_fd,jse, sizeof(*jse));
@@ -42,6 +48,7 @@ static void ReadEvent(struct js_event *jse){
   
 }
 
+// DeviceInfo -- Prints a controller information
 void deviceInfo(Controller controller){
   printf("\t============================================================\n\n");
   printf("\tDevice Name: %s\n",controller->name);
@@ -53,7 +60,7 @@ void deviceInfo(Controller controller){
 // Runs all the necessary functions to ensure connectivity
 void Initialize(Controller controller){
   int fd = open(JOYSTICK_DEVICE, O_RDONLY);
-  int errorNum;
+
   if(fd > 0){
     char name[128];
     int version;
@@ -81,13 +88,10 @@ void Initialize(Controller controller){
     pthread_attr_t attr;
     pthread_attr_init(&attr);
     pthread_create(&controller->thread,&attr, Loop, (void*)controller);
-  } else {
-    errorNum = fd;
-    fprintf(stderr, "Error: problem opening controller input file: %s\nError: the controller is not connected.\n", strerror( errorNum ));
   }
+
 }
 
-//TODO: ADD COMMAND PARAMETER IN THE CONSTRUCTOR
 // Public methods ------------------------------------------------
 Controller newController(void) {
   Controller controller = (Controller) malloc(sizeof(struct controller));
@@ -98,37 +102,48 @@ Controller newController(void) {
   return controller;
 }
 
+// deleteController -- Frees memory after we are done.
 static void deleteController(Controller controller) {
   free(controller);
 }
 
+// getActiveState -- Checks to see if the controller is active
 bool getActiveState(Controller controller){
   return controller->active;
 }
 
-bool getButtonDown (int button){
+// getKeyDown -- Check if the specific key is currently being pressed
+bool getKeyDown (int button){
   if(state.button[button]>0){
     return true;
   }
   return false;
 }
 
+// getAxisDown -- Check if the specific axis is currently being pressed
 bool getAxisDown (int axis){
 
+  // if the controller input is equal to one of the 4 options then we want to check if the value is
+  // between 0 and 100, to know if we are actually return 100 meaning the wheels will be max out or 
+  // 0 where the wheels arent turning
   if((axis == AXIS_LEFT_STICK_X || axis == AXIS_LEFT_STICK_Y) ||
      (axis == AXIS_RIGHT_STICK_X || axis == AXIS_RIGHT_STICK_Y)){
-
+      
     if((state.axis[axis] >= 0 || state.axis[axis] <= 100) && state.axis[axis] != 50){
       return true;
     }
-    
+  
+  // return the axis is greater than 0 then just return true.
+  // These axis can only be 0 or 1
   } else if(state.axis[axis] > 0){
     return true;
   }
-  
+ 
   return false;
 }
 
+
+// Returns the value of a specific axis button
 int getAxisValue(int axis){
 
   if(getAxisDown(axis)) {
@@ -138,6 +153,7 @@ int getAxisValue(int axis){
   return 0;
 }
 
+// Converts the standard controller output value to a readable and understandable value 0 - 100
 static int GetRawAxis(int inputValue)
 {
   int value = ((inputValue - MIN_AXIS_VALUE) * (MAX_RAW_AXIS_VALUE - MIN_RAW_AXIS_VALUE) / (MAX_AXIS_VALUE - MIN_AXIS_VALUE) + 0);
@@ -145,26 +161,18 @@ static int GetRawAxis(int inputValue)
   return value;
 }
 
+// Returns the controller name
 char* getControllerName(Controller controller){
   return controller->name;
 }
 
-
-
+// Free memory, and sets the controller from active to not active and kills the thread.
 void shutDown(Controller controller){
-  printf("Shutting Down %s...\n", getControllerName(controller));
-  if(controller == NULL){
-    puts("Done...");
-    return;
-  }
-  controller->shuttingDown = true;
-  puts("Please wait a few seconds....");
-  controller->active = false;
-  pthread_exit(&controller->thread);
-  puts("Stopping Running Thread....");
-  sleep(1);
+  sleep(3);
   puts("Freeing up memory...");
-  controller->shuttingDown = false;
+  controller->active = false;
   deleteController(controller);
+  sleep(3);
   puts("Done..");
+  pthread_cancel(controller->thread);
 }

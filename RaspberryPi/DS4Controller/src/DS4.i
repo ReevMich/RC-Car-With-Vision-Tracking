@@ -1,4 +1,3 @@
-
 %module controller
 %{
 #include "DS4.h"
@@ -6,7 +5,7 @@
   void Initialize(Controller parameters);
   void* Loop(void*);
   void shutDown(Controller);
-  bool getButtonDown(int);
+  bool getKeyDown(int);
   bool getAxisDown(int);
   int getAxisValue(int);
   char* getControllerName(Controller);
@@ -23,8 +22,7 @@ struct controller {
   char* numButtons; 
   pthread_t thread;
   int active;
-  int mode;
-  int shuttingDown;
+  int mode; 
 };
 
 typedef enum KeyCode{
@@ -40,7 +38,6 @@ typedef enum KeyCode{
   BTN_OPTIONS = 9,
   BTN_LEFT_STICK = 10,
   BTN_RIGHT_STICK = 11,
-  BTN_PS = 12,
   /////////////////////
   AXIS_LEFT_STICK_X = 0,
   AXIS_LEFT_STICK_Y = 1,
@@ -57,7 +54,7 @@ typedef enum KeyCode{
 void Initialize(Controller);
 void* Loop(void*);
 void shutDown(Controller);
-bool getButtonDown(int);
+bool getKeyDown(int);
 bool getAxisDown(int);
 int getAxisValue(int);
 char* getControllerName(Controller);

@@ -2,72 +2,60 @@
 
 from DS4Controller.src import controller
 from time import sleep
-from multiprocessing import Queue
 
 
-def main(out_arduino_wheel_speed_queue, out_program_running_queue):
+def main(out_arduino_wheel_speed_pipe, out_run_prog_pipe):
+
+    out_wheels_pipe, _ = out_arduino_wheel_speed_pipe
+    out_run_prog_pipe, _ = out_run_prog_pipe
+
     # init ds4 controller
     ds4_controller = controller.newController()
 
     # lets us know when to exit to program
-    ps_pressed = False
+    square_pressed = False
+    reverse = False
 
     # Speed of the wheels
-    left_wheels = 0
-    right_wheels = 0
+    prev_left = 0.0
+    prev_right = 0.0
 
-    # Keeps track of the previous values so that way we don't have to always send messages to the arduino.
-    prev_left_value = 0
-    prev_right_value = 0
+    reverse_countdown = 0
 
-    # lets us know is any of the wheels values has changed.
-    values_changed = False
+    while ds4_controller.active and square_pressed is False:
 
-    while ds4_controller.active and ps_pressed is False:
-
-        if controller.getButtonDown(controller.BTN_SQUARE):
-            reverse = True
-            print "Reverse: On"
-        else:
-            reverse = False
+        reverse_countdown -= 1
+        if controller.getKeyDown(controller.BTN_SQUARE):
+            print str(reverse)
+            reverse = not reverse
+            reverse_countdown = 5
 
         try:
-            if reverse is True:
-                left_value = -controller.getAxisValue(controller.AXIS_R2)
-                right_value = -controller.getAxisValue(controller.AXIS_L2)
+            if controller.getAxisDown(controller.AXIS_R2):
+                right_wheels = controller.getAxisValue(controller.AXIS_R2)
             else:
-                left_value = controller.getAxisValue(controller.AXIS_R2)
-                right_value = controller.getAxisValue(controller.AXIS_L2)
+                right_wheels = 0
+            if controller.getAxisDown(controller.AXIS_L2):
+                left_wheels = controller.getAxisValue(controller.AXIS_L2)
+            else:
+                left_wheels = 0
 
-            values_changed = False
-
-            if prev_left_value != left_value:
-                left_wheels = left_value
-                values_changed = True
-
-            if prev_right_value != right_value:
-                right_wheels = right_value
-                values_changed = True
+            if reverse is True:
+                left_wheels = -left_wheels
+                right_wheels = -right_wheels
 
         except ValueError:
-            left_wheels = "0"
-            right_wheels = "0"
+            left_wheels = 0
+            right_wheels = 0
 
-        print "Left: %d Right: %d" % (left_wheels, right_wheels)
-        if values_changed is True:
-            prev_left_value = left_wheels
-            prev_right_value = right_wheels
-            out_arduino_wheel_speed_queue.put((left_wheels, right_wheels))
+        if right_wheels != prev_right or left_wheels != prev_left:
+            out_wheels_pipe.send((left_wheels * 100, right_wheels * 100))
 
-        if controller.getButtonDown(controller.BTN_PS):
-            out_program_running_queue.put(False)
-            controller.shutDown(ds4_controller)
-            ps_pressed = True
+        prev_left = left_wheels
+        prev_right = right_wheels
+
+        if controller.getKeyDown(controller.BTN_CIRCLE):
+            square_pressed = True
+            out_run_prog_pipe.send(False)
 
         sleep(.1)
-
-
-if __name__ == '__main__':
-    test_arduino_queue = Queue()
-    test_running_program_queue = Queue()
-    main(test_arduino_queue, test_running_program_queue)

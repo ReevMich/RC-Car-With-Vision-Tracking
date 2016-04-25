@@ -1,60 +1,59 @@
-#!/usr/bin/python
-
-from multiprocessing import Queue
 import RPi.GPIO as GPIO
-from time import sleep, time
+import time
 
+GPIO.setmode(GPIO.BCM)
+#sets the GPIO pins
 TRIG = 23
 ECHO = 24
 
 
-def main(in_program_running_queue, out_stop_moving_queue):
+def main(dist_pipe):
 
-    GPIO.setmode(GPIO.BCM)
+    print "Distance Measurement In Progress"
+
+    out_sensor, _ = dist_pipe
 
     GPIO.setup(TRIG, GPIO.OUT)
     GPIO.setup(ECHO, GPIO.IN)
 
     GPIO.output(TRIG, False)
+
     print "Waiting For Sensor To Settle"
-    sleep(.5)
+    time.sleep(.5)
 
-    program_running = True
+    prev_value = False
 
-    while program_running:
-
-        try:
-            program_running = in_program_running_queue.get()
-        except in_program_running_queue.empty():
-            pass
-
-        sleep(.5)
-
+    while True:
+        time.sleep(.25)
+      #sends a pulse for .00001 of a second 
         GPIO.output(TRIG, True)
-        sleep(0.00001)
+        time.sleep(0.00001)
         GPIO.output(TRIG, False)
-
-        pulse_start, pulse_end = (0, 0)
-
+        #sends pulse
         while GPIO.input(ECHO) == 0:
-            pulse_start = time()
-
+            pulse_start = time.time()
+        #recives pulse
         while GPIO.input(ECHO) == 1:
-            pulse_end = time()
+            pulse_end = time.time()
 
+        #calculate diffrence between start and end
         pulse_duration = pulse_end - pulse_start
 
+        # find distance in cm
         distance = pulse_duration * 17150
-
+                
         distance = round(distance, 2)
-        print "Distance: %f cm" % distance
 
-        if distance < 20.0:
-            out_stop_moving_queue.put(False)
-        else:
-            out_stop_moving_queue.put(True)
+        #when distance is less then 20cm make car stop and reverse 
+        if distance < 20 and prev_value is False:
+            prev_value = True
+            out_sensor.send(True)
+            print "Stop!!!!"
+        #if greater then 20cm continue with normal commands.
+        elif prev_value is True and distance >= 20:
+            prev_value = False
+            out_sensor.send(False)
 
-if __name__ == '__main__':
-    test_out_queue = Queue()
-    test_in_queue = Queue()
-    main(test_in_queue, test_out_queue)
+        print "Distance:", distance, "cm"
+    
+    GPIO.cleanup()

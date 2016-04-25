@@ -7,10 +7,6 @@ import controller
 me = controller.newController()
  
 while(me.active):
-
-    if(controller.getButtonDown(controller.BTN_PS)):
-        print("PS BUTTON")
-       
     if(controller.getAxisDown(controller.AXIS_R2)):
         print("R2=%d" % controller.getAxisValue(controller.AXIS_R2))
 
@@ -29,16 +25,16 @@ while(me.active):
     if(controller.getAxisDown(controller.AXIS_RIGHT_STICK_Y)):
         print("RS_Y=%d" % controller.getAxisValue(controller.AXIS_RIGHT_STICK_Y))
 
-    if(controller.getButtonDown(controller.BTN_SQUARE)):
+    if(controller.getKeyDown(controller.BTN_SQUARE)):
         print("SQUARE")
 
-    if(controller.getButtonDown(controller.BTN_CIRCLE)):
+    if(controller.getKeyDown(controller.BTN_CIRCLE)):
         print("CIRCLE")
         
-    if(controller.getButtonDown(controller.BTN_TRIANGLE)):
+    if(controller.getKeyDown(controller.BTN_TRIANGLE)):
         print("TRIANGLE")
 
-    if(controller.getButtonDown(controller.BTN_CROSS)):
+    if(controller.getKeyDown(controller.BTN_CROSS)):
         print("CROSS")
 
         

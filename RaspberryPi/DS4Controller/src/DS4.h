@@ -1,3 +1,9 @@
+///////////////////////////////////////////////////////////////////////
+// Author(s): Michael Reeves
+// File: DS4.h
+// Description: DS4 Controller header file
+///////////////////////////////////////////////////////////////////////
+
 #include <linux/types.h>
 #include <linux/joystick.h>
 #include <pthread.h>
@@ -42,7 +48,6 @@ typedef enum KeyCode{
   BTN_OPTIONS = 9,
   BTN_LEFT_STICK = 10,
   BTN_RIGHT_STICK = 11,
-  BTN_PS = 12,
   AXIS_LEFT_STICK_X = 0,
   AXIS_LEFT_STICK_Y = 1,
   AXIS_RIGHT_STICK_X = 2,
@@ -74,7 +79,6 @@ struct controller {
   pthread_t thread;
   int active;
   int mode; // Add functionality so that we can incorporate more functionality to the controller.
-  int shuttingDown;
 };
 
 
