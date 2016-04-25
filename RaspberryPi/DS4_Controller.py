@@ -25,7 +25,7 @@ def main(out_arduino_wheel_speed_pipe, out_run_prog_pipe):
     while ds4_controller.active and square_pressed is False:
 
         reverse_countdown -= 1
-        if controller.getButtonDown(controller.BTN_SQUARE):
+        if controller.getKeyDown(controller.BTN_SQUARE):
             print str(reverse)
             reverse = not reverse
             reverse_countdown = 5
@@ -54,7 +54,7 @@ def main(out_arduino_wheel_speed_pipe, out_run_prog_pipe):
         prev_left = left_wheels
         prev_right = right_wheels
 
-        if controller.getButtonDown(controller.BTN_CIRCLE):
+        if controller.getKeyDown(controller.BTN_CIRCLE):
             square_pressed = True
             out_run_prog_pipe.send(False)
 

@@ -16,7 +16,7 @@ import Wheel_Control
 import Distance_Sensor
 import ball_tracking
 from sys import argv, exit
-
+import subprocess
 
 # Main Method
 def main():
@@ -32,8 +32,10 @@ def main():
     ball_tracker_proc = None
 
     if len(argv) is 3:
-        if argv[1] == '-m':
+        if argv[1] == '-mode':
             if argv[2] == '0':
+                subprocess.call(["sudo", "ds4drv", "--daemon"])
+                
                 controller_ds4_proc = Process(target=DS4_Controller.main,
                                               args=(controller_pipe,
                                                     run_prog_pipe))

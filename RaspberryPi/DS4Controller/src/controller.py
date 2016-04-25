@@ -96,9 +96,6 @@ class controller(_object):
     __swig_setmethods__["mode"] = _controller.controller_mode_set
     __swig_getmethods__["mode"] = _controller.controller_mode_get
     if _newclass:mode = _swig_property(_controller.controller_mode_get, _controller.controller_mode_set)
-    __swig_setmethods__["shuttingDown"] = _controller.controller_shuttingDown_set
-    __swig_getmethods__["shuttingDown"] = _controller.controller_shuttingDown_get
-    if _newclass:shuttingDown = _swig_property(_controller.controller_shuttingDown_get, _controller.controller_shuttingDown_set)
     def __init__(self): 
         this = _controller.new_controller()
         try: self.this.append(this)
@@ -120,7 +117,6 @@ BTN_SHARE = _controller.BTN_SHARE
 BTN_OPTIONS = _controller.BTN_OPTIONS
 BTN_LEFT_STICK = _controller.BTN_LEFT_STICK
 BTN_RIGHT_STICK = _controller.BTN_RIGHT_STICK
-BTN_PS = _controller.BTN_PS
 AXIS_LEFT_STICK_X = _controller.AXIS_LEFT_STICK_X
 AXIS_LEFT_STICK_Y = _controller.AXIS_LEFT_STICK_Y
 AXIS_RIGHT_STICK_X = _controller.AXIS_RIGHT_STICK_X
@@ -144,9 +140,9 @@ def shutDown(*args):
   return _controller.shutDown(*args)
 shutDown = _controller.shutDown
 
-def getButtonDown(*args):
-  return _controller.getButtonDown(*args)
-getButtonDown = _controller.getButtonDown
+def getKeyDown(*args):
+  return _controller.getKeyDown(*args)
+getKeyDown = _controller.getKeyDown
 
 def getAxisDown(*args):
   return _controller.getAxisDown(*args)

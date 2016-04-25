@@ -54,6 +54,6 @@ def main(dist_pipe):
             prev_value = False
             out_sensor.send(False)
 
-        #print "Distance:", distance, "cm"
+        print "Distance:", distance, "cm"
     
     GPIO.cleanup()
