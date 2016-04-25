@@ -53,7 +53,7 @@ def main(arduino_wheel_speeds_pipe, dist_sensor_pipe, ball_tracker_pipe):
             set_wheel_speeds(-30, LEFT_FORWARD, LEFT_BACKWARD)
             set_wheel_speeds(-30, RIGHT_FORWARD, RIGHT_BACKWARD)
 
-        sleep(.09)
+        sleep(.001)
 
 
 # Configure the gpio pins
