@@ -32,11 +32,11 @@ def main(out_arduino_wheel_speed_pipe, out_run_prog_pipe):
 
         try:
             if controller.getAxisDown(controller.AXIS_R2):
-                right_wheels = controller.getAxisValue(controller.AXIS_R2)
+                right_wheels = ds4_controller.getAxisValue(controller.AXIS_R2)
             else:
                 right_wheels = 0
             if controller.getAxisDown(controller.AXIS_L2):
-                left_wheels = controller.getAxisValue(controller.AXIS_L2)
+                left_wheels = ds4_controller.getAxisValue(controller.AXIS_L2)
             else:
                 left_wheels = 0
 
@@ -56,6 +56,7 @@ def main(out_arduino_wheel_speed_pipe, out_run_prog_pipe):
 
         if controller.getKeyDown(controller.BTN_CIRCLE):
             square_pressed = True
+            controller.shutDown(ds4_controller)
             out_run_prog_pipe.send(False)
 
         sleep(.1)
