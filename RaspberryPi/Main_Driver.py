@@ -33,6 +33,7 @@ def main():
 
     if len(argv) is 3:
         if argv[1] == '-mode':
+            # places the program in controller mode.
             if argv[2] == '0':
                 subprocess.call(["sudo", "ds4drv", "--daemon"])
                 
@@ -42,12 +43,15 @@ def main():
 
                 controller_ds4_proc.start()
                 print "RUNNING CONTROLLER MODE"
+                
+            # places the program in tracker mode.
             elif argv[2] == '1':
                 ball_tracker_proc = Process(target=ball_tracking.main,
                                             args=(ball_tracker_pipe,
                                                   run_prog_pipe))
                 ball_tracker_proc.start()
                 print "RUNNING BALL TRACKER MODE"
+
             else:
                 print "0 or 1 was not specified"
                 usage()

@@ -1,7 +1,3 @@
-# USAGE
-# python ball_tracking.py --video ball_tracking_example.mp4
-# python ball_tracking.py
-
 # import the necessary packages
 from collections import deque
 import numpy as np
@@ -21,8 +17,7 @@ def main(out_wheels_pipe, term_prog_pipe):
     term_prog, _ = term_prog_pipe
 
     # define the lower and upper boundaries of the "green"
-    # ball in the HSV color space, then initialize the
-    # list of tracked points
+    # ball in the (Hue Saturation Value) color space, then initialize the
     green_lower = (29, 86, 6)
     green_upper = (64, 255, 255)
 
@@ -37,7 +32,6 @@ def main(out_wheels_pipe, term_prog_pipe):
 
     # keep looping
     while win is False:
-        #sleep(.01)
         # grab the current frame
         (_, frame) = camera.read()
 
