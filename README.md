@@ -8,7 +8,6 @@ As a secondary control system we have a bluetooth Playstation 4 control for manu
 * GitHub: https://github.com/du-linux/Team1/
 
 ##Features
-========
 
 - Control Remote Control Car with Playstation 4 Controller -- Wired/Wirelessly **Bluetooth** 
 - Remote Control Car tracks and follows a colored ball
@@ -18,9 +17,6 @@ As a secondary control system we have a bluetooth Playstation 4 control for manu
 - Features a (**Dual H-Bridge Stepper Motor**) that controls all four motors/wheels
 - Controlling all 4-wheels with python dirrectly to GPIO
 
-
-========
-</br>
 
 ###Dependencies
 
