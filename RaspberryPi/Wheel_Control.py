@@ -87,7 +87,7 @@ def set_wheel_speeds(speed, forward, backward):
         wiringpi.softPwmWrite(forward, abs_speed)
         wiringpi.softPwmWrite(backward, 0)
     else:
-        print "BackWard %d" % abs_speed
+        #print "BackWard %d" % abs_speed
         wiringpi.softPwmWrite(forward, 0)
         wiringpi.softPwmWrite(backward, abs_speed)
 

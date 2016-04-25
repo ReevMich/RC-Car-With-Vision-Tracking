@@ -14,42 +14,42 @@ def main():
 
     run_prog = True  # Keeps the program loading
 
-    run_prog_pipe_cntrlr = Pipe()  # Run Program Pipe
+    run_prog_pipe = Pipe()  # Run Program Pipe
     controller_pipe = Pipe()  # PS4 Controller Pipe
     dist_pipe = Pipe()  # Distance Sensor Pipe
     ball_tracker_pipe = Pipe()  # Ball Tracker Pipe
 
     # Configure All the Processes
     controller_ds4_proc = Process(target=DS4_Controller.main,
-                                  args=(controller_pipe, run_prog_pipe_cntrlr))
+                                  args=(controller_pipe, run_prog_pipe))
 
-    arduino_proc = Process(target=Wheel_Control.main, args=(controller_pipe,
+    wheel_proc = Process(target=Wheel_Control.main, args=(controller_pipe,
                                                             dist_pipe,
                                                             ball_tracker_pipe))
 
     distance_proc = Process(target=Distance_Sensor.main, args=(dist_pipe,))
     ball_tracker_proc = Process(target=ball_tracking.main,
-                                args=(ball_tracker_pipe,))
+                                args=(ball_tracker_pipe,run_prog_pipe))
 
     # Run all the processes
-    arduino_proc.start()
+    wheel_proc.start()
     controller_ds4_proc.start()
     distance_proc.start()
     ball_tracker_proc.start()
 
     # Gets the out pipe of run program
-    _, in_term_prog = run_prog_pipe_cntrlr
+    _, in_term_prog = run_prog_pipe
 
     # Keep running the program until we should terminate
     while run_prog:
         run_prog = in_term_prog.recv()
-        print "Program Should terminate:" + str(not run_prog)
+        #print "Program Should terminate:" + str(not run_prog)
         sleep(1)
 
     # Terminate all the processes if the program should terminate
     controller_ds4_proc.terminate()
     distance_proc.terminate()
-    arduino_proc.terminate()
+    wheel_proc.terminate()
     ball_tracker_proc.terminate()
 
 if __name__ == '__main__':
