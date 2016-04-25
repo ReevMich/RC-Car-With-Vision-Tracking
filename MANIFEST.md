@@ -18,9 +18,7 @@ Contains a list of each file and its purpose
 	* **Distance_Sensor.py**: 
 	  Distance Sensor Module that detects how far the car is from an object the sensor detects
 	* **Wheel_Control.py**: 
-	  ???
-	* **cfirmata.c**:
-	  ???
+	  Handles the wheels, is basically the middle man between every module that needs to use the motors
 	* ***/DS4Controller/***:
 	  Contains all the DS4 module files, thats used in "C" wrapping
 	  * **\__init__\.py**
