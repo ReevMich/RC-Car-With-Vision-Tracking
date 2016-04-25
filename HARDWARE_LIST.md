@@ -17,4 +17,4 @@ Contains a list of each part of the hardware used for the project. Description (
 * 16x2 Display (Used to show information) $12.00
 * Replacement Motors (Two motors failed) $15.00
 * Balls (What the car tracks) $14.00
-* ***TOTAL: *** -- $251 :frowning:
+* ***TOTAL:*** -- $251 :frowning:
