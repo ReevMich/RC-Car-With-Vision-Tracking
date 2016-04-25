@@ -310,3 +310,8 @@ We have went through many veriations of ball tracking algorithms, until we have 
 We also looked into help from Ardunio Resources for the lcd display on how to set up the pins
 
 [Liquid Crystal Display](https://www.arduino.cc/en/Tutorial/LiquidCrystalDisplay)
+
+Making the DS4 Controller driver from scratch would have been super painful, given it was still a painful process but thanks
+to the api given from kernel was nice to have,.
+
+[Joystick Api - Linux](https://www.kernel.org/doc/Documentation/input/joystick-api.txt)
