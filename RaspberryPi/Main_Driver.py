@@ -7,7 +7,7 @@ from multiprocessing import Process, Pipe
 import DS4_Controller
 import Wheel_Control
 import Distance_Sensor
-import BallTracker
+import ball_tracking
 
 
 # Main Method
@@ -28,7 +28,7 @@ def main():
                                                             ball_tracker_pipe))
 
     distance_proc = Process(target=Distance_Sensor.main, args=(dist_pipe,))
-    ball_tracker_proc = Process(target=BallTracker.main,
+    ball_tracker_proc = Process(target=ball_tracking.main,
                                 args=(ball_tracker_pipe,))
 
     arduino_proc.start()
