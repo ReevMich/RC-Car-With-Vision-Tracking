@@ -32,25 +32,30 @@ def main():
     ball_tracker_proc = None
 
     if len(argv) is 3:
-        if argv[1] is 'm':
-            if argv[2] is '0':
+        if argv[1] == '-m':
+            if argv[2] == '0':
                 controller_ds4_proc = Process(target=DS4_Controller.main,
                                               args=(controller_pipe,
                                                     run_prog_pipe))
 
                 controller_ds4_proc.start()
-            elif argv[1] is '1':
+                print "RUNNING CONTROLLER MODE"
+            elif argv[2] == '1':
                 ball_tracker_proc = Process(target=ball_tracking.main,
                                             args=(ball_tracker_pipe,
                                                   run_prog_pipe))
                 ball_tracker_proc.start()
+                print "RUNNING BALL TRACKER MODE"
             else:
+                print "0 or 1 was not specified"
                 usage()
                 exit(3)
         else:
+            print "-m was not specified"
             usage()
             exit(2)
     else:
+        print "Invalid number of arguments"
         usage()
         exit(1)
 
