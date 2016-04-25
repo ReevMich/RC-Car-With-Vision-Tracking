@@ -11,12 +11,10 @@ Contains a list of each file and its purpose
 	    The license plate random generator for the 16x2 LCD Display  
 * 	***/RaspberryPi/***: 
       contains all the raspberry-pi programs
-	* **BallTracker.py**: 
+	* **ball_tracking.py**: 
 	  Vision tracking using the connected camera to find circles and uses the coordinates accordingly to send the power to the correct wheels
-	* **BallTrackerHue.py**: 
-	  ???
 	* **DS4_Controller.py**: 
-    PS4 Controller thread that controls the motors and sends messages through pipes in python
+	    PS4 Controller thread that controls the motors and sends messages through pipes in python
 	* **Distance_Sensor.py**: 
 	  Distance Sensor Module that detects how far the car is from an object the sensor detects
 	* **Wheel_Control.py**: 
