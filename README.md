@@ -25,9 +25,7 @@ As a secondary control system we have a bluetooth Playstation 4 control for manu
 
 ###Dependencies
 
-
-
-####Vision Tracking
+#####Vision Tracking
 ==================
 Install SimpleCV. This was the method we used even though there are many ways to install SimpleCV:
 
@@ -60,21 +58,30 @@ Segmenting the image makes it easier to only see the colored object to be able t
 
 The filter function for the blobs creates the circle around the ball. With the circle object, we can grab the x and y coordinates which we use for our wheel power logic.
 
+#####Wheel Controls
+
+######Get/setup repo
+
+    git clone --recursive https://github.com/WiringPi/WiringPi-Python.git
+    cd WiringPi-Python
     
+######Builing WiringPi
 
-####DS4DRV
+    sudo apt-get install python-dev python-setuptools swig
+    cd WiringPi
+    sudo ./build
+    
+######Generate Bindings
+
+    swig2.0 -python wiringpi.i
+    
+######Build & Install -- (Python 2)
+    
+    sudo python setup.py install
+
+#####DS4DRV
 ==========
-- [Python](http://python.org/)_ 2.7 or 3.3+ (for Debian/Ubuntu you need to
-  install the *python2.7-dev* or *python3.3-dev* package)
-- [python-setuptools](https://pythonhosted.org/setuptools/)
 - hcitool (usually available in the *bluez-utils* or equivalent package)
-
-These packages will normally be installed automatically by the setup script,
-but you may want to use your distro's packages if available:
-
-- [pyudev](http://pyudev.readthedocs.org/) 0.16 or higher
-- [python-evdev](http://pythonhosted.org/evdev/) 0.3.0 or higher
-<br/>
 
 Installing the latest release is simple by using [pip](http://www.pip-installer.org/):
 
@@ -91,14 +98,7 @@ Installing SWIG - The C code Wrapper to Python ***Required to wrapping C code to
   
     sudo apt-get install swig
 
-#####Distance Sensor
-- Importing RPi.GPIO allows for use of the gpio pins on the Raspberry Pi
-- Importing time allows for calculating time between triger and echo.
-
-``` python
-    import RPi.GPIO as GPIO
-    import time
-```
+###Using
 
 #####Using DS4
 ---------
@@ -215,10 +215,18 @@ Check the example above to find out some of these functions and constants are us
 =============
 How Distance Sensor Works
 
+- Importing RPi.GPIO allows for use of the gpio pins on the Raspberry Pi
+- Importing time allows for calculating time between triger and echo.
+
+``` python
+    import RPi.GPIO as GPIO
+    import time
+```
+
 Distance Sensors uses the HC-sr04 sensor. Using the GPIO pins the pi sends a signal to the HC-sr04 to triger the sensor.
 The sensor then recives a echo signal and calculates the diffrence in time between the trigger and echo. 
 This gives the distance in cm after mulitipliying the time by 17150. 
-```
+``` python
         GPIO.output(TRIG, True)
         time.sleep(0.00001)
         GPIO.output(TRIG, False)
@@ -237,7 +245,7 @@ This gives the distance in cm after mulitipliying the time by 17150.
 ```
 
 When the distance is below a certain distance the car will auto reverse to prevent hiting an obect.
-```
+``` python
         if distance < 20 and prev_value is False:
             prev_value = True
             out_sensor.send(True)
@@ -247,22 +255,43 @@ When the distance is below a certain distance the car will auto reverse to preve
             out_sensor.send(False)
 ```
 
-.....
-
 ------------
-</br>
 
 ####License Plate
 ============
-......
+
+In the ``LCD_Display_Code.ino``, if you want to modify the phrases that shows up on the display pay close attention to these lines of code.
+
+You will have to change the number of terms, which is based on the number of items you want to display from the line1 or line2 list.
+
+If your pin layout is different, you will have to change the pin numbers in the LiquidCrystal line.
+``` c
+    #define NUM_OF_TERMS 13
+    
+    // initialize the library with the numbers of the interface pins
+    LiquidCrystal lcd(7, 8, 9, 10, 11, 12);
+
+    // List of phrases or words for row 1
+    String line1[NUM_OF_TERMS] =  { "   MY NAME IS   ", "     I LOVE     ", "      CPSC      ", 
+        "     Give me    ", "    #TEAMTUX    ", "  Raspberry Pi  ", " SAY HELLO TO MY ", "    UNIX IS     ", "    ALL HAIL    ", "  TEAM ONE IS   ", "   CHUY WALTER  ", 
+        "   CHUY-JESUS  ", "  WALLIE-WALTER "};
+    
+    // List of phrases or words for row 2
+    String line2[NUM_OF_TERMS] = { "CUTIE PANTS 3000", "    #TEAMTUX    ", "      434       ",  
+        "    the Green   ", "    #TEAMTUX    ", " is no Ardunio  " ,"  little friend ", "    THE BEST    ", "    THE TUX     ", "   BEST TEAM!   ", "  MICHAEL JOSH  ", 
+        "CAPTAIN-MICHAEL", "  JOSHUA-JOSH  "};
+```
 
 -----------
-</br>
 
 
 ##Known Issues / Limitations
 ==============================
-.......
+
+- When the program terminates the wheels might go out of control. ( Its a feature not a bug. :smile: )
+- Uses a lot of power
+- Wheels tend to break
+- Distance sensor only works when facing the object directly
 
 -----------------------------
 </br>
@@ -272,3 +301,12 @@ When the distance is below a certain distance the car will auto reverse to preve
 [![Jesus Diaz](https://avatars1.githubusercontent.com/u/16565647?v=3&s=144)](https://github.com/diazjesu) | [![Michael Reeves](https://avatars1.githubusercontent.com/u/7333415?v=3&s=144)](https://github.com/ReevMich) | [![Walter Cepeda](https://avatars1.githubusercontent.com/u/16603134?v=3&s=144)](https://github.com/waltercpd) | [![Josh Dassigner](https://avatars1.githubusercontent.com/u/14892282?v=3&s=144)](https://github.com/dassjosh)
 ---|---|---|---
 [Jesus Diaz](https://github.com/diazjesu) | [Michael Reeves](https://github.com/ReevMich) | [Walter Cepeda](https://github.com/waltercpd) |  [Josh Dassigner](https://github.com/dassjosh)
+
+## References
+We have went through many veriations of ball tracking algorithms, until we have decided to give opencv a try and we found a pretty helpful resource to use that increased efficiency. 
+
+[Ball Tracking with OpenCV](http://www.pyimagesearch.com/2015/09/14/ball-tracking-with-opencv/)
+
+We also looked into help from Ardunio Resources for the lcd display on how to set up the pins
+
+[Liquid Crystal Display](https://www.arduino.cc/en/Tutorial/LiquidCrystalDisplay)
