@@ -15,6 +15,7 @@ POWER = 8 * SPEED_MULTIPLIER + 10
 MIN_TURN = 30
 STRAIGHT_CONE_PERCENT = .45
 
+
 def main(out_wheels_pipe, term_prog_pipe):
     out_wheels, _ = out_wheels_pipe
     term_prog, _ = term_prog_pipe
@@ -28,7 +29,7 @@ def main(out_wheels_pipe, term_prog_pipe):
     camera = cv2.VideoCapture(0)
 
     center_width = 320
-    percentage_middle = center_width * STRAIGHT_CONE_PERCENT
+    percentage_mid = center_width * STRAIGHT_CONE_PERCENT
 
     left_wheel, right_wheel = (0, 0)
 
@@ -66,11 +67,12 @@ def main(out_wheels_pipe, term_prog_pipe):
 
             center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
-            x_coord, y_coord = center 
+            x_coord, y_coord = center
 
-            if x_coord < (center_width - percentage_middle): # Ball is on the left
+            # Ball is on the left
+            if x_coord < (center_width - percentage_mid):
                 # Percentage from middle the ball is
-                x_percentage = float(x_coord) / (center_width - percentage_middle)
+                x_percentage = float(x_coord) / (center_width - percentage_mid)
                 x_percentage = -1.0 * (x_percentage - 1) * POWER
                 
                 # Make sure we have a minimum speed we can turn at
@@ -81,9 +83,10 @@ def main(out_wheels_pipe, term_prog_pipe):
                     left_wheel = MIN_TURN
                     right_wheel = -MIN_TURN
 
-            elif x_coord > (center_width + percentage_middle): # Ball is on the right
+            # Ball is on the right
+            elif x_coord > (center_width + percentage_mid):
                 # Calculate the perecentage from middle the ball is
-                x_percentage = float(x_coord) / (center_width + percentage_middle)
+                x_percentage = float(x_coord) / (center_width + percentage_mid)
                 x_percentage = -1.0 * (x_percentage - 2) * POWER
 
                 # Make sure we have a minimum speed we can turn at
