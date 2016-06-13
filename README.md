@@ -5,8 +5,6 @@ This car uses an arduino and H-drive to control the motor and what speed they ru
 The way the RC car with Vision Tracking moves is by utilizing  a camera to track a ball of a predetermined color.
 As a secondary control system we have a bluetooth Playstation 4 control for manual control.
 
-* GitHub: https://github.com/du-linux/Team1/
-
 ##Features
 
 - Control Remote Control Car with Playstation 4 Controller -- Wired/Wirelessly **Bluetooth** 
